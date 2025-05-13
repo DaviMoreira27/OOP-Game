@@ -118,7 +118,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 if (mapaLinha < Consts.MUNDO_ALTURA && mapaColuna < Consts.MUNDO_LARGURA) {
                     try {
                         Image newImage = Toolkit.getDefaultToolkit().getImage(
-                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "blackTile.png");
+                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
                         g2.drawImage(newImage,
                                 j * Consts.CELL_SIDE, i * Consts.CELL_SIDE,
                                 Consts.CELL_SIDE, Consts.CELL_SIDE, null);
