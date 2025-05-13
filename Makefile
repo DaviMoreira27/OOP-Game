@@ -10,7 +10,7 @@ SOURCES := $(shell find $(SRC_DIR) -name "*.java")
 
 build:
 	mkdir -p $(BUILD_DIR)
-	javac -d $(BUILD_DIR) -sourcepath $(SRC_DIR) $(SOURCES)
+	javac -d $(BUILD_DIR) -sourcepath $(SRC_DIR) $(SRC_DIR)/**/*.java
 
 run: build
 	java -cp $(BUILD_DIR) $(MAIN_CLASS)
