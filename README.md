@@ -31,6 +31,7 @@ make build
 ## TODO
 
 [X] No clique do mouse, o personagem controlavel deve dar tiros
+
 [] Adicionar mais inimigos que atiram, e perseguem o personagem
 
 [] Implementar barra de vida no personagem principal e nos inimigos
