@@ -1,20 +1,33 @@
 package Modelo;
 
 import Auxiliar.Desenho;
-import types.EnumDirecao;
 
 public class Tiro extends Personagem {
-    private EnumDirecao direcao;
+    private double posLinha;
+    private double posColuna;
+    private final double deltaLinha;
+    private final double deltaColuna;
     private int distanciaPercorrida = 0;
-    private static int DISTANCIA_MAXIMA = 5;
+    private static final int DISTANCIA_MAXIMA = 5;
 
-    public Tiro(String sNomeImagePNG, int linha, int coluna, EnumDirecao direcao) {
+    public Tiro(String sNomeImagePNG, int linhaInicial, int colunaInicial, int linhaMouse, int colunaMouse) {
         super(sNomeImagePNG);
-        this.direcao = direcao;
-        this.setPosicao(linha, coluna);
+
         this.bTransponivel = true;
+
+        this.posLinha = linhaInicial;
+        this.posColuna = colunaInicial;
+
+        double dx = colunaMouse - colunaInicial;
+        double dy = linhaMouse - linhaInicial;
+        double magnitude = Math.sqrt(dx * dx + dy * dy);
+        this.deltaColuna = dx / magnitude;
+        this.deltaLinha = dy / magnitude;
+
+        this.setPosicao(linhaInicial, colunaInicial);
     }
 
+    @Override
     public void autoDesenho() {
         super.autoDesenho();
 
@@ -23,17 +36,18 @@ public class Tiro extends Personagem {
             return;
         }
 
-        boolean vivo = true;
-        switch (direcao) {
-            case DIREITA: vivo = this.moveRight(); break;
-            case ESQUERDA: vivo = this.moveLeft(); break;
-            case CIMA: vivo = this.moveUp(); break;
-            case BAIXO: vivo = this.moveDown(); break;
+        posLinha += deltaLinha;
+        posColuna += deltaColuna;
+
+        int novaLinha = (int) Math.round(posLinha);
+        int novaColuna = (int) Math.round(posColuna);
+
+        boolean podeMover = this.setPosicao(novaLinha, novaColuna);
+        if (!podeMover) {
+            Desenho.acessoATelaDoJogo().removePersonagem(this);
+            return;
         }
 
         distanciaPercorrida++;
-        if (!vivo) {
-            Desenho.acessoATelaDoJogo().removePersonagem(this);
-        }
     }
 }

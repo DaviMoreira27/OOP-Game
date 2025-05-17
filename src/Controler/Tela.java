@@ -10,7 +10,6 @@ import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import Modelo.BichinhoVaiVemVertical;
 import Modelo.ZigueZague;
-import types.EnumDirecao;
 import Auxiliar.Posicao;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -34,7 +33,6 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private Graphics g2;
     private int cameraLinha = 0;
     private int cameraColuna = 0;
-    private EnumDirecao lastDirection = EnumDirecao.DIREITA;
 
     public Tela() {
         Desenho.setCenario(this);
@@ -166,16 +164,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             this.faseAtual.clear();
         } else if (e.getKeyCode() == KeyEvent.VK_UP) {
             hero.moveUp();
-            this.lastDirection = EnumDirecao.CIMA;
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             hero.moveDown();
-            this.lastDirection = EnumDirecao.BAIXO;
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             hero.moveLeft();
-            this.lastDirection = EnumDirecao.ESQUERDA;
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             hero.moveRight();
-            this.lastDirection = EnumDirecao.DIREITA;
         }
         this.atualizaCamera();
         this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
@@ -188,8 +182,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         int linhaHeroi = hero.getPosicao().getLinha();
         int colunaHeroi = hero.getPosicao().getColuna();
 
-        Tiro tiro = new Tiro("fire.png", linhaHeroi, colunaHeroi, this.lastDirection);
+        int colunaMouse = e.getX() / Consts.CELL_SIDE;
+        int linhaMouse = e.getY() / Consts.CELL_SIDE;
+
+        Tiro tiro = new Tiro("fire.png", linhaHeroi, colunaHeroi, linhaMouse, colunaMouse);
         Desenho.acessoATelaDoJogo().addPersonagem(tiro);
+
         repaint();
     }
 

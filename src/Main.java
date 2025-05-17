@@ -7,7 +7,7 @@ public class Main {
             public void run() {
                 Tela tTela = new Tela();
                 tTela.setVisible(true);
-                tTela.setResizable(true);
+                tTela.setResizable(false);
                 tTela.createBufferStrategy(2);
                 tTela.go();
             }
