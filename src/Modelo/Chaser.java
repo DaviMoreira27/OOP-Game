@@ -10,7 +10,7 @@ import Auxiliar.*;
  *
  * @author 2373891
  */
-public class Chaser extends Personagem  {
+public class Chaser extends Personagem {
 
     private boolean iDirectionV;
     private boolean iDirectionH;
@@ -19,35 +19,46 @@ public class Chaser extends Personagem  {
         super(sNomeImagePNG);
         iDirectionV = true;
         iDirectionH = true;
-        
+        this.vida = 3;
+        this.dano = 1;
         this.bTransponivel = true;
     }
 
     public void computeDirection(Posicao heroPos) {
-        if (heroPos.getColuna() < this.getPosicao().getColuna()) {
-            iDirectionH = true;
-        } else if (heroPos.getColuna() > this.getPosicao().getColuna()) {
+        int chaserX = this.getPosicao().getColuna() * Consts.CELL_SIDE;
+        int chaserY = this.getPosicao().getLinha() * Consts.CELL_SIDE;
+        int heroX = heroPos.getColuna() * Consts.CELL_SIDE;
+        int heroY = heroPos.getLinha() * Consts.CELL_SIDE;
+
+        int distX = Math.abs(heroX - chaserX);
+        int distY = Math.abs(heroY - chaserY);
+
+        if (distX > 50) {
+            iDirectionH = heroX < chaserX;
+        } else {
             iDirectionH = false;
         }
-        if (heroPos.getLinha() < this.getPosicao().getLinha()) {
-            iDirectionV = true;
-        } else if (heroPos.getLinha() > this.getPosicao().getLinha()) {
+
+        if (distY > 50) {
+            iDirectionV = heroY < chaserY;
+        } else {
             iDirectionV = false;
         }
     }
 
     public void autoDesenho() {
         super.autoDesenho();
+
         if (iDirectionH) {
             this.moveLeft();
-        } else {
+        } else if (!iDirectionH && Math.abs(pPosicao.getColuna() * Consts.CELL_SIDE - Consts.CELL_SIDE) > 50) {
             this.moveRight();
         }
+
         if (iDirectionV) {
             this.moveUp();
-        } else {
+        } else if (!iDirectionV && Math.abs(pPosicao.getLinha() * Consts.CELL_SIDE - Consts.CELL_SIDE) > 50) {
             this.moveDown();
         }
     }
-
 }

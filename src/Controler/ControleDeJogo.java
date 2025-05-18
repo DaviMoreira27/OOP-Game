@@ -2,6 +2,7 @@ package Controler;
 
 import Modelo.Chaser;
 import Modelo.Personagem;
+import Modelo.Tiro;
 import Modelo.Hero;
 import Auxiliar.Posicao;
 import java.util.ArrayList;
@@ -15,24 +16,50 @@ public class ControleDeJogo {
     }
     
     public void processaTudo(ArrayList<Personagem> umaFase) {
-        Hero hero = (Hero) umaFase.get(0);
-        Personagem pIesimoPersonagem;
-        for (int i = 1; i < umaFase.size(); i++) {
-            pIesimoPersonagem = umaFase.get(i);
-            if (hero.getPosicao().igual(pIesimoPersonagem.getPosicao())) {
-                if (pIesimoPersonagem.isbTransponivel()) /*TO-DO: verificar se o personagem eh mortal antes de retirar*/ {
-                    if (pIesimoPersonagem.isbMortal())
-                    umaFase.remove(pIesimoPersonagem);
-                }
-            }
+    Hero hero = (Hero) umaFase.get(0);
+    ArrayList<Personagem> paraRemover = new ArrayList<>();
+
+    for (int i = 1; i < umaFase.size(); i++) {
+        Personagem p = umaFase.get(i);
+
+        // Chaser persegue o herói
+        if (p instanceof Chaser) {
+            ((Chaser) p).computeDirection(hero.getPosicao());
         }
-        for (int i = 1; i < umaFase.size(); i++) {
-            pIesimoPersonagem = umaFase.get(i);
-            if (pIesimoPersonagem instanceof Chaser) {
-                ((Chaser) pIesimoPersonagem).computeDirection(hero.getPosicao());
+
+        // Colisão com o herói
+        if (hero.getPosicao().igual(p.getPosicao())) {
+            if (!p.isbTransponivel() && p.getDano() > 0) {
+                hero.tomarDano(p.getDano());
             }
         }
     }
+
+    // Verificar colisão entre tiros e inimigos
+    for (int i = 0; i < umaFase.size(); i++) {
+        Personagem p1 = umaFase.get(i);
+        if (p1 instanceof Tiro) {
+            for (int j = 1; j < umaFase.size(); j++) {
+                Personagem p2 = umaFase.get(j);
+                if (p2 != p1 && !(p2 instanceof Tiro) && p1.getPosicao().igual(p2.getPosicao())) {
+                    p2.tomarDano(1); // Dano do tiro
+                    paraRemover.add(p1); // Remove o tiro
+                    break; // Um tiro só atinge um alvo
+                }
+            }
+        }
+    }
+
+    // Verifica quem deve ser removido (vida ≤ 0)
+    for (Personagem p : umaFase) {
+        if (p.getVida() <= 0) {
+            paraRemover.add(p);
+        }
+    }
+
+    // Remove personagens marcados
+    umaFase.removeAll(paraRemover);
+}
 
     /*Retorna true se a posicao p é válida para Hero com relacao a todos os personagens no array*/
     public boolean ehPosicaoValida(ArrayList<Personagem> umaFase, Posicao p) {

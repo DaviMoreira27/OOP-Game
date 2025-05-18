@@ -7,6 +7,7 @@ public class Fogo extends Personagem{
     public Fogo(String sNomeImagePNG) {
         super(sNomeImagePNG);
         this.bMortal = true;
+        this.showVida = false;
     }
 
     @Override

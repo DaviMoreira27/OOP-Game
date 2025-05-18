@@ -3,6 +3,8 @@ package Modelo;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import Auxiliar.Posicao;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -16,6 +18,9 @@ public abstract class Personagem implements Serializable {
     protected Posicao pPosicao;
     protected boolean bTransponivel; /*Pode passar por cima?*/
     protected boolean bMortal;       /*Se encostar, morre?*/
+    protected int vida;
+    protected int dano;
+    protected boolean showVida = true;
 
     public boolean isbMortal() {
         return bMortal;
@@ -24,6 +29,15 @@ public abstract class Personagem implements Serializable {
 
     protected Personagem(String sNomeImagePNG) {
         this.pPosicao = new Posicao(1, 1);
+        /*
+         * Acontece um erro se a imagem do personagem e a de um inimigo ficam uma sobre
+         * a outra
+         * 
+         * Exception in thread "AWT-EventQueue-0" java.lang.ClassCastException: class
+         * Modelo.ZigueZague cannot be cast to class Modelo.Hero (Modelo.ZigueZague and
+         * Modelo.Hero are in unnamed module of loader 'app')
+         * FIX ME
+         */
         this.bTransponivel = true;
         this.bMortal = false;
         try {
@@ -35,6 +49,30 @@ public abstract class Personagem implements Serializable {
             iImage = new ImageIcon(bi);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
+        }
+    }
+
+    public void setVida(int vida) {
+        this.vida = vida;
+    }
+
+    public int getVida() {
+        return this.vida;
+    }
+
+    public void setDano(int dano) {
+        this.dano = dano;
+    }
+
+    public int getDano() {
+        return this.dano;
+    }
+
+    public void tomarDano(int valor) {
+        this.vida -= valor;
+        if (this.vida <= 0) {
+            Desenho.acessoATelaDoJogo().removePersonagem(this);
+            this.showVida = false;
         }
     }
 
@@ -53,7 +91,23 @@ public abstract class Personagem implements Serializable {
     }
 
     public void autoDesenho(){
-        Desenho.desenhar(this.iImage, this.pPosicao.getColuna(), this.pPosicao.getLinha());        
+        Desenho.desenhar(this.iImage, this.pPosicao.getColuna(), this.pPosicao.getLinha()); 
+
+        if (this.showVida) {
+            Graphics g = Desenho.acessoATelaDoJogo().getGraphicsBuffer();
+            int cameraX = Desenho.acessoATelaDoJogo().getCameraColuna() * Consts.CELL_SIDE;
+            int cameraY = Desenho.acessoATelaDoJogo().getCameraLinha() * Consts.CELL_SIDE;
+            
+            int x = this.pPosicao.getColuna() * Consts.CELL_SIDE - cameraX;
+            int y = this.pPosicao.getLinha() * Consts.CELL_SIDE - cameraY + Consts.CELL_SIDE;
+
+            g.setColor(Color.YELLOW); // fundo da barra
+            g.fillRect(x, y, Consts.CELL_SIDE, 4);
+
+            g.setColor(Color.GREEN); // barra proporcional à vida
+            int vidaBarra = (int) ((this.vida / 10.0) * Consts.CELL_SIDE);
+            g.fillRect(x, y, vidaBarra, 8);
+        }
     }
 
     public boolean setPosicao(int linha, int coluna) {

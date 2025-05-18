@@ -6,6 +6,8 @@ public class ZigueZague extends Personagem{
     
     public ZigueZague(String sNomeImagePNG) {
         super(sNomeImagePNG);
+        this.vida = 3;
+        this.dano = 1;
     }
 
     public void autoDesenho(){

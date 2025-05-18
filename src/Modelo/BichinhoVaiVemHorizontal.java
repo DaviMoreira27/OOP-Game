@@ -9,6 +9,8 @@ public class BichinhoVaiVemHorizontal extends Personagem {
         super(sNomeImagePNG);
         bRight = true;
         iContador = 0;
+        this.vida = 3;
+        this.dano = 1;
     }
 
     public void autoDesenho() {

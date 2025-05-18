@@ -8,9 +8,10 @@ public class Caveira extends Personagem{
     
     public Caveira(String sNomeImagePNG) {
         super(sNomeImagePNG);
-        this.bTransponivel = false;
         bMortal = false;
         this.iContaIntervalos = 0;
+        this.vida = 3;
+        this.dano = 1;
     }
 
     public void autoDesenho() {

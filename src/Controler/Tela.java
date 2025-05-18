@@ -66,7 +66,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         bBichinhoH2.setPosicao(6, 6);
         this.addPersonagem(bBichinhoH2);
         
-        BichinhoVaiVemVertical bVv = new BichinhoVaiVemVertical("Caveira.png");
+        BichinhoVaiVemVertical bVv = new BichinhoVaiVemVertical("caveira.png");
         bVv.setPosicao(10, 10);
         this.addPersonagem(bVv);        
         
@@ -74,7 +74,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         bV.setPosicao(9, 1);
         this.addPersonagem(bV);
         
-        Chaser chase = new Chaser("chaser.png");
+        Chaser chase = new Chaser("Chaser.png");
         chase.setPosicao(12, 12);
         this.addPersonagem(chase);        
         

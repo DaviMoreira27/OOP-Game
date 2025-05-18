@@ -6,6 +6,8 @@ public class BichinhoVaiVemVertical extends Personagem{
     public BichinhoVaiVemVertical(String sNomeImagePNG) {
         super(sNomeImagePNG);
         bUp = true;
+        this.vida = 3;
+        this.dano = 1;
     }
 
     public void autoDesenho(){

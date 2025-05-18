@@ -14,7 +14,9 @@ public class Tiro extends Personagem {
         super(sNomeImagePNG);
 
         this.bTransponivel = true;
-
+        this.vida = 1;
+        this.dano = 5;
+        this.showVida = false;
         this.posLinha = linhaInicial;
         this.posColuna = colunaInicial;
 

@@ -34,9 +34,9 @@ make build
 
 [] Adicionar mais inimigos que atiram, e perseguem o personagem
 
-[] Implementar barra de vida no personagem principal e nos inimigos
+[X] Implementar barra de vida no personagem principal e nos inimigos
 
-[] Adicionar dano e colisões
+[-] Adicionar dano e colisões
 
 [] Adicionar bosses, inimigos com mais vida, dano e velocidade. Ao derrotar-los, transportar o personagem até a próxima fase
 

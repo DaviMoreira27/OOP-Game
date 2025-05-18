@@ -5,6 +5,8 @@ import Auxiliar.Desenho;
 public class Hero extends Personagem{
     public Hero(String sNomeImagePNG) {
         super(sNomeImagePNG);
+        this.vida = 3;
+        this.dano = 5;
     }
 
     public void voltaAUltimaPosicao(){
