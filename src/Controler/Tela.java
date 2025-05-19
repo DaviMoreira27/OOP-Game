@@ -11,7 +11,11 @@ import Auxiliar.Desenho;
 import Modelo.BichinhoVaiVemVertical;
 import Modelo.ZigueZague;
 import Auxiliar.Posicao;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -25,6 +29,10 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
     private Hero hero;
@@ -33,26 +41,22 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private Graphics g2;
     private int cameraLinha = 0;
     private int cameraColuna = 0;
+    private boolean jogoPausado = false;
+    private JPanel menuPausa;
 
     public Tela() {
         Desenho.setCenario(this);
         initComponents();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setLayout(null);
         this.addMouseListener(this);
-        /*mouse*/
-
         this.addKeyListener(this);
-        /*teclado*/
- /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
-        this.setSize(Consts.RES * Consts.CELL_SIDE + getInsets().left + getInsets().right,
-                Consts.RES * Consts.CELL_SIDE + getInsets().top + getInsets().bottom);
 
-        faseAtual = new ArrayList<Personagem>();
+        faseAtual = new ArrayList<>();
 
-        /*Cria faseAtual adiciona personagens*/
         hero = new Hero("Robbo.png");
         hero.setPosicao(0, 7);
         this.addPersonagem(hero);
-        this.atualizaCamera();
 
         ZigueZague zz = new ZigueZague("robo.png");
         zz.setPosicao(5, 5);
@@ -65,19 +69,58 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("roboPink.png");
         bBichinhoH2.setPosicao(6, 6);
         this.addPersonagem(bBichinhoH2);
-        
+
         BichinhoVaiVemVertical bVv = new BichinhoVaiVemVertical("caveira.png");
         bVv.setPosicao(10, 10);
-        this.addPersonagem(bVv);        
-        
+        this.addPersonagem(bVv);
+
         Caveira bV = new Caveira("caveira.png");
         bV.setPosicao(9, 1);
         this.addPersonagem(bV);
-        
+
         Chaser chase = new Chaser("Chaser.png");
         chase.setPosicao(12, 12);
-        this.addPersonagem(chase);        
-        
+        this.addPersonagem(chase);
+
+        initMenuPausa();
+        atualizaCamera();
+    }
+
+    private void initMenuPausa() {
+        menuPausa = new JPanel();
+        atualizarMenuPausa();
+        menuPausa.setLayout(new GridLayout(4, 1));
+        menuPausa.setBackground(new Color(0, 0, 0, 200));
+        menuPausa.setVisible(false);
+
+        JButton btnContinuar = new JButton("Continuar");
+        btnContinuar.setFont(new Font(getName(), Font.BOLD, getHeight() / 20));
+        btnContinuar.addActionListener(e -> {
+            jogoPausado = false;
+            menuPausa.setVisible(false);
+            this.requestFocusInWindow();
+            this.paint(g2);
+            this.toFront();
+        });
+
+        JButton btnSalvar = new JButton("Salvar jogo");
+        btnSalvar.addActionListener(e -> System.out.println("Jogo salvo"));
+        btnSalvar.setFont(new Font(getName(), Font.BOLD, getHeight() / 20));
+
+        JButton btnCarregar = new JButton("Carregar jogo");
+        btnCarregar.addActionListener(e -> System.out.println("Jogo carregado"));
+        btnCarregar.setFont(new Font(getName(), Font.BOLD, getHeight() / 20));
+
+        JButton btnSair = new JButton("Sair");
+        btnSair.addActionListener(e -> System.exit(0));
+        btnSair.setFont(new Font(getName(), Font.BOLD, getHeight() / 20));
+
+        menuPausa.add(btnContinuar);
+        menuPausa.add(btnSalvar);
+        menuPausa.add(btnCarregar);
+        menuPausa.add(btnSair);
+
+        this.add(menuPausa);
     }
 
     public int getCameraLinha() {
@@ -106,13 +149,13 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
 
     public void paint(Graphics gOld) {
         Graphics g = this.getBufferStrategy().getDrawGraphics();
-        /*Criamos um contexto gráfico*/
         g2 = g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
-        /**
-         * ***********Desenha cenário de fundo*************
-         */
-        for (int i = 0; i < Consts.RES; i++) {
-            for (int j = 0; j < Consts.RES; j++) {
+
+        int linhasVisiveis = getHeight() / Consts.CELL_SIDE;
+        int colunasVisiveis = getWidth() / Consts.CELL_SIDE;
+
+        for (int i = 0; i < linhasVisiveis; i++) {
+            for (int j = 0; j < colunasVisiveis; j++) {
                 int mapaLinha = cameraLinha + i;
                 int mapaColuna = cameraColuna + j;
 
@@ -120,8 +163,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                     try {
                         Image newImage = Toolkit.getDefaultToolkit().getImage(
                                 new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
-                        g2.drawImage(newImage,
-                                j * Consts.CELL_SIDE, i * Consts.CELL_SIDE,
+                        g2.drawImage(newImage, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE,
                                 Consts.CELL_SIDE, Consts.CELL_SIDE, null);
                     } catch (IOException ex) {
                         Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,9 +171,14 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 }
             }
         }
+
         if (!this.faseAtual.isEmpty()) {
             this.cj.desenhaTudo(faseAtual);
             this.cj.processaTudo(faseAtual);
+        }
+
+        if (jogoPausado) {
+            atualizarMenuPausa();
         }
 
         g.dispose();
@@ -141,18 +188,34 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         }
     }
 
+    private void atualizarMenuPausa() {
+        int largura = getWidth() / 3;
+        int altura = getHeight() / 3;
+        int posX = (getWidth() - largura) / 2;
+        int posY = (getHeight() - altura) / 2;
+
+        menuPausa.setBounds(posX, posY, largura, altura);
+        menuPausa.setVisible(true);
+        menuPausa.revalidate();
+        menuPausa.repaint();
+    }
+
     private void atualizaCamera() {
         int linha = hero.getPosicao().getLinha();
         int coluna = hero.getPosicao().getColuna();
+        int linhasVisiveis = getHeight() / Consts.CELL_SIDE;
+        int colunasVisiveis = getWidth() / Consts.CELL_SIDE;
 
-        cameraLinha = Math.max(0, Math.min(linha - Consts.RES / 2, Consts.MUNDO_ALTURA - Consts.RES));
-        cameraColuna = Math.max(0, Math.min(coluna - Consts.RES / 2, Consts.MUNDO_LARGURA - Consts.RES));
+        cameraLinha = Math.max(0, Math.min(linha - linhasVisiveis / 2, Consts.MUNDO_ALTURA - linhasVisiveis));
+        cameraColuna = Math.max(0, Math.min(coluna - colunasVisiveis / 2, Consts.MUNDO_LARGURA - colunasVisiveis));
     }
 
     public void go() {
         TimerTask task = new TimerTask() {
             public void run() {
-                repaint();
+                if (!jogoPausado) {
+                    repaint();
+                }
             }
         };
         Timer timer = new Timer();
@@ -160,22 +223,29 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_C) {
-            this.faseAtual.clear();
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-            hero.moveUp();
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            hero.moveDown();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            hero.moveLeft();
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            hero.moveRight();
+        if (e.getKeyCode() == KeyEvent.VK_P) {
+            jogoPausado = !jogoPausado;
+            menuPausa.setVisible(jogoPausado);
+            return;
         }
-        this.atualizaCamera();
-        this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
-                + (hero.getPosicao().getLinha()));
 
-        //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
+        if (!jogoPausado) {
+            if (e.getKeyCode() == KeyEvent.VK_C) {
+                this.faseAtual.clear();
+            } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                hero.moveUp();
+            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                hero.moveDown();
+            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                hero.moveLeft();
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                hero.moveRight();
+            }
+
+            this.atualizaCamera();
+            this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
+                    + (hero.getPosicao().getLinha()));
+        }
     }
 
     public void mousePressed(MouseEvent e) {
@@ -190,7 +260,6 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
 
         repaint();
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

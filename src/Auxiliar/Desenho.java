@@ -25,8 +25,8 @@ public class Desenho implements Serializable {
         int telaX = (iColuna - jCenario.getCameraColuna()) * Consts.CELL_SIDE;
         int telaY = (iLinha - jCenario.getCameraLinha()) * Consts.CELL_SIDE;
 
-        if (telaX >= 0 && telaX < Consts.RES * Consts.CELL_SIDE
-                && telaY >= 0 && telaY < Consts.RES * Consts.CELL_SIDE) {
+        if (telaX >= 0 && telaX < jCenario.getWidth()
+                && telaY >= 0 && telaY < jCenario.getHeight()) {
             iImage.paintIcon(jCenario, getGraphicsDaTela(), telaX, telaY);
         }
     }
