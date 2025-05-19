@@ -27,7 +27,7 @@ public abstract class Personagem implements Serializable {
     }
 
 
-    protected Personagem(String sNomeImagePNG) {
+    protected Personagem(String sNomeImagePNG, int cDano, int cVida) {
         this.pPosicao = new Posicao(1, 1);
         /*
          * Acontece um erro se a imagem do personagem e a de um inimigo ficam uma sobre
@@ -40,6 +40,8 @@ public abstract class Personagem implements Serializable {
          */
         this.bTransponivel = true;
         this.bMortal = false;
+        this.vida = cVida;
+        this.dano = cDano;
         try {
             iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + sNomeImagePNG);
             Image img = iImage.getImage();
@@ -84,6 +86,10 @@ public abstract class Personagem implements Serializable {
 
     public boolean isbTransponivel() {
         return bTransponivel;
+    }
+
+    public ImageIcon getImage() {
+        return this.iImage;
     }
 
     public void setbTransponivel(boolean bTransponivel) {

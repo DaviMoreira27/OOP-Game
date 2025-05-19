@@ -15,12 +15,10 @@ public class Chaser extends Personagem {
     private boolean iDirectionV;
     private boolean iDirectionH;
 
-    public Chaser(String sNomeImagePNG) {
-        super(sNomeImagePNG);
+    public Chaser(String sNomeImagePNG, int cDano, int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
         iDirectionV = true;
         iDirectionH = true;
-        this.vida = 3;
-        this.dano = 1;
         this.bTransponivel = true;
     }
 

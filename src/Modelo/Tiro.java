@@ -10,12 +10,11 @@ public class Tiro extends Personagem {
     private int distanciaPercorrida = 0;
     private static final int DISTANCIA_MAXIMA = 5;
 
-    public Tiro(String sNomeImagePNG, int linhaInicial, int colunaInicial, int linhaMouse, int colunaMouse) {
-        super(sNomeImagePNG);
+    public Tiro(String sNomeImagePNG, int linhaInicial, int colunaInicial, int linhaMouse, int colunaMouse, int cDano,
+            int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
 
         this.bTransponivel = true;
-        this.vida = 1;
-        this.dano = 5;
         this.showVida = false;
         this.posLinha = linhaInicial;
         this.posColuna = colunaInicial;

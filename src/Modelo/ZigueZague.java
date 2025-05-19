@@ -4,10 +4,8 @@ import java.util.Random;
 
 public class ZigueZague extends Personagem{
     
-    public ZigueZague(String sNomeImagePNG) {
-        super(sNomeImagePNG);
-        this.vida = 3;
-        this.dano = 1;
+    public ZigueZague(String sNomeImagePNG, int cDano, int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
     }
 
     public void autoDesenho(){

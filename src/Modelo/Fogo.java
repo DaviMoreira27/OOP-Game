@@ -4,8 +4,8 @@ import Auxiliar.Desenho;
 
 public class Fogo extends Personagem{
             
-    public Fogo(String sNomeImagePNG) {
-        super(sNomeImagePNG);
+    public Fogo(String sNomeImagePNG, int cDano, int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
         this.bMortal = true;
         this.showVida = false;
     }

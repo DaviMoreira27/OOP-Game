@@ -3,10 +3,8 @@ package Modelo;
 import Auxiliar.Desenho;
 
 public class Hero extends Personagem{
-    public Hero(String sNomeImagePNG) {
-        super(sNomeImagePNG);
-        this.vida = 3;
-        this.dano = 5;
+    public Hero(String sNomeImagePNG, int cDano, int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
     }
 
     public void voltaAUltimaPosicao(){

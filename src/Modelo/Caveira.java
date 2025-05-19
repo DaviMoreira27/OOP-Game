@@ -6,12 +6,10 @@ import Auxiliar.Desenho;
 public class Caveira extends Personagem{
     private int iContaIntervalos;
     
-    public Caveira(String sNomeImagePNG) {
-        super(sNomeImagePNG);
+    public Caveira(String sNomeImagePNG, int cDano, int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
         bMortal = false;
         this.iContaIntervalos = 0;
-        this.vida = 3;
-        this.dano = 1;
     }
 
     public void autoDesenho() {
@@ -20,7 +18,7 @@ public class Caveira extends Personagem{
         this.iContaIntervalos++;
         if(this.iContaIntervalos == Consts.TIMER){
             this.iContaIntervalos = 0;
-            Fogo f = new Fogo("fire.png");
+            Fogo f = new Fogo("fire.png", 5, 1);
             f.setPosicao(pPosicao.getLinha(),pPosicao.getColuna()+1);
             Desenho.acessoATelaDoJogo().addPersonagem(f);
         }

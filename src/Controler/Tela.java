@@ -54,31 +54,31 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
 
         faseAtual = new ArrayList<>();
 
-        hero = new Hero("Robbo.png");
+        hero = new Hero("Robbo.png", 100, 10);
         hero.setPosicao(0, 7);
         this.addPersonagem(hero);
 
-        ZigueZague zz = new ZigueZague("robo.png");
+        ZigueZague zz = new ZigueZague("robo.png", 60, 15);
         zz.setPosicao(5, 5);
         this.addPersonagem(zz);
 
-        BichinhoVaiVemHorizontal bBichinhoH = new BichinhoVaiVemHorizontal("roboPink.png");
+        BichinhoVaiVemHorizontal bBichinhoH = new BichinhoVaiVemHorizontal("roboPink.png", 40, 8);
         bBichinhoH.setPosicao(3, 3);
         this.addPersonagem(bBichinhoH);
 
-        BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("roboPink.png");
+        BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("roboPink.png", 40, 8);
         bBichinhoH2.setPosicao(6, 6);
         this.addPersonagem(bBichinhoH2);
 
-        BichinhoVaiVemVertical bVv = new BichinhoVaiVemVertical("caveira.png");
+        BichinhoVaiVemVertical bVv = new BichinhoVaiVemVertical("caveira.png", 50, 12);
         bVv.setPosicao(10, 10);
         this.addPersonagem(bVv);
 
-        Caveira bV = new Caveira("caveira.png");
+        Caveira bV = new Caveira("caveira.png", 70, 20);
         bV.setPosicao(9, 1);
         this.addPersonagem(bV);
 
-        Chaser chase = new Chaser("Chaser.png");
+        Chaser chase = new Chaser("Chaser.png", 80, 25);
         chase.setPosicao(12, 12);
         this.addPersonagem(chase);
 
@@ -104,7 +104,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         });
 
         JButton btnSalvar = new JButton("Salvar jogo");
-        btnSalvar.addActionListener(e -> System.out.println("Jogo salvo"));
+        btnSalvar.addActionListener(e -> SaveHandler.salvarJogo(this.faseAtual));
         btnSalvar.setFont(new Font(getName(), Font.BOLD, getHeight() / 20));
 
         JButton btnCarregar = new JButton("Carregar jogo");
@@ -255,13 +255,14 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         int colunaMouse = e.getX() / Consts.CELL_SIDE;
         int linhaMouse = e.getY() / Consts.CELL_SIDE;
 
-        Tiro tiro = new Tiro("fire.png", linhaHeroi, colunaHeroi, linhaMouse, colunaMouse);
+        Tiro tiro = new Tiro("fire.png", linhaHeroi, colunaHeroi, linhaMouse, colunaMouse, 10, 1);
         Desenho.acessoATelaDoJogo().addPersonagem(tiro);
 
         repaint();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -273,18 +274,16 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 561, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 561, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 500, Short.MAX_VALUE));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
+     // Variables declaration - do not modify//GEN-BEGIN:variables
+     // End of variables declaration//GEN-END:variables
 
     public void mouseMoved(MouseEvent e) {
     }

@@ -3,11 +3,9 @@ package Modelo;
 
 public class BichinhoVaiVemVertical extends Personagem{
     boolean bUp;
-    public BichinhoVaiVemVertical(String sNomeImagePNG) {
-        super(sNomeImagePNG);
+    public BichinhoVaiVemVertical(String sNomeImagePNG, int cDano, int cVida) {
+        super(sNomeImagePNG, cDano, cVida);
         bUp = true;
-        this.vida = 3;
-        this.dano = 1;
     }
 
     public void autoDesenho(){
