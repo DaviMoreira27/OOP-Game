@@ -1,5 +1,5 @@
 # Project Name
-
+(commit test)
 A game developed using Java and OOP concepts for the SSC0504 class in the Systems Information course at USP.
 
 ## Makefile Commands
