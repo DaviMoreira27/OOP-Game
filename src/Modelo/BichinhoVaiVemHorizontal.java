@@ -5,8 +5,8 @@ public class BichinhoVaiVemHorizontal extends Personagem {
     private boolean bRight;
     int iContador;
 
-    public BichinhoVaiVemHorizontal(String sNomeImagePNG, int cDano, int cVida) {
-        super(sNomeImagePNG, cDano, cVida);
+    public BichinhoVaiVemHorizontal(String sNomeImagePNG, int cDano, int cVida, boolean imported) {
+        super(sNomeImagePNG, cDano, cVida, imported);
         bRight = true;
         iContador = 0;
     }

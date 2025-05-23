@@ -3,11 +3,17 @@ package Modelo;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
 
-public class Caveira extends Personagem{
+public class Caveira extends Personagem {
+
     private int iContaIntervalos;
-    
-    public Caveira(String sNomeImagePNG, int cDano, int cVida) {
-        super(sNomeImagePNG, cDano, cVida);
+
+    public Caveira(
+        String sNomeImagePNG,
+        int cDano,
+        int cVida,
+        boolean imported
+    ) {
+        super(sNomeImagePNG, cDano, cVida, imported);
         bMortal = false;
         this.iContaIntervalos = 0;
     }
@@ -16,11 +22,11 @@ public class Caveira extends Personagem{
         super.autoDesenho();
 
         this.iContaIntervalos++;
-        if(this.iContaIntervalos == Consts.TIMER){
+        if (this.iContaIntervalos == Consts.TIMER) {
             this.iContaIntervalos = 0;
-            Fogo f = new Fogo("fire.png", 5, 1);
-            f.setPosicao(pPosicao.getLinha(),pPosicao.getColuna()+1);
+            Fogo f = new Fogo("fire.png", 5, 1, false);
+            f.setPosicao(pPosicao.getLinha(), pPosicao.getColuna() + 1);
             Desenho.acessoATelaDoJogo().addPersonagem(f);
         }
-    }    
+    }
 }

@@ -1,7 +1,5 @@
 package Modelo;
 
-import javax.swing.ImageIcon;
-
 public class PersonagemDTO {
     public int linha;
     public int coluna;
@@ -20,6 +18,6 @@ public class PersonagemDTO {
         this.vida = p.getVida();
         this.dano = p.getDano();
         this.classe = p.getClass().getSimpleName();
-        this.image = p.iImage.
+        this.image = p.imagePath;
     }
 }

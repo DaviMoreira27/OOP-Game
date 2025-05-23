@@ -15,8 +15,13 @@ public class Chaser extends Personagem {
     private boolean iDirectionV;
     private boolean iDirectionH;
 
-    public Chaser(String sNomeImagePNG, int cDano, int cVida) {
-        super(sNomeImagePNG, cDano, cVida);
+    public Chaser(
+        String sNomeImagePNG,
+        int cDano,
+        int cVida,
+        boolean imported
+    ) {
+        super(sNomeImagePNG, cDano, cVida, imported);
         iDirectionV = true;
         iDirectionH = true;
         this.bTransponivel = true;
@@ -49,13 +54,25 @@ public class Chaser extends Personagem {
 
         if (iDirectionH) {
             this.moveLeft();
-        } else if (!iDirectionH && Math.abs(pPosicao.getColuna() * Consts.CELL_SIDE - Consts.CELL_SIDE) > 50) {
+        } else if (
+            !iDirectionH &&
+            Math.abs(
+                pPosicao.getColuna() * Consts.CELL_SIDE - Consts.CELL_SIDE
+            ) >
+            50
+        ) {
             this.moveRight();
         }
 
         if (iDirectionV) {
             this.moveUp();
-        } else if (!iDirectionV && Math.abs(pPosicao.getLinha() * Consts.CELL_SIDE - Consts.CELL_SIDE) > 50) {
+        } else if (
+            !iDirectionV &&
+            Math.abs(
+                pPosicao.getLinha() * Consts.CELL_SIDE - Consts.CELL_SIDE
+            ) >
+            50
+        ) {
             this.moveDown();
         }
     }

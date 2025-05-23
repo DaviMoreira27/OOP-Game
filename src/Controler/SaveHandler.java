@@ -19,6 +19,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import Modelo.BichinhoVaiVemHorizontal;
+import Modelo.BichinhoVaiVemVertical;
+import Modelo.Caveira;
+import Modelo.Chaser;
 import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.PersonagemDTO;
@@ -89,6 +93,10 @@ public class SaveHandler {
             }.getType();
             List<PersonagemDTO> dtos = gson.fromJson(json, listType);
 
+            for (PersonagemDTO d : dtos) {
+                System.out.println(d.classe);
+            }
+
             for (PersonagemDTO dto : dtos) {
                 Personagem p = criarPersonagemFromDTO(dto);
                 if (p != null) {
@@ -118,21 +126,30 @@ public class SaveHandler {
 
         switch (dto.classe) {
             case "Hero":
-                p = new Hero(dto.image, dto.dano, dto.vida);
+                p = new Hero(dto.image, dto.dano, dto.vida, true);
                 break;
             case "ZigueZague":
-                p = new ZigueZague(dto.image, dto.dano, dto.vida);
+                p = new ZigueZague(dto.image, dto.dano, dto.vida, true);
+                break;
+            case "BichoVaiVemHorizontal":
+                p = new BichinhoVaiVemHorizontal(dto.image, dto.dano, dto.vida, true);
+                break;
+            case "BichoVaiVemVertical":
+                p = new BichinhoVaiVemVertical(dto.image, dto.dano, dto.vida, true);
+                break;
+            case "Caveira":
+                p = new Caveira(dto.image, dto.dano, dto.vida, true);
+                break;
+            case "Chase":
+                p = new Chaser(dto.image, dto.dano, dto.vida, true);
                 break;
             default:
                 System.out.println("Classe desconhecida: " + dto.classe);
-                return null;
         }
 
         if (p != null) {
             p.setPosicao(dto.linha, dto.coluna);
             p.setbTransponivel(dto.transponivel);
-            p.setDano(dto.dano);
-            p.setVida(dto.vida);
         }
 
         return p;

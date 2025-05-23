@@ -11,8 +11,8 @@ public class Tiro extends Personagem {
     private static final int DISTANCIA_MAXIMA = 5;
 
     public Tiro(String sNomeImagePNG, int linhaInicial, int colunaInicial, int linhaMouse, int colunaMouse, int cDano,
-            int cVida) {
-        super(sNomeImagePNG, cDano, cVida);
+            int cVida, boolean imported) {
+        super(sNomeImagePNG, cDano, cVida, imported);
 
         this.bTransponivel = true;
         this.showVida = false;
