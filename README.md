@@ -32,11 +32,15 @@ make build
 
 [X] No clique do mouse, o personagem controlavel deve dar tiros
 
-[] Adicionar mais inimigos que atiram, e perseguem o personagem
-
 [X] Implementar barra de vida no personagem principal e nos inimigos
 
-[-] Adicionar dano e colisões
+[X] Adicionar dano e colisões
+
+[X] Adicionar save no jogo
+
+[-] Deve ser possível adicionar inimigos dinamicamente no jogo
+
+[] Adicionar mais inimigos que atiram, e perseguem o personagem
 
 [] Adicionar bosses, inimigos com mais vida, dano e velocidade. Ao derrotar-los, transportar o personagem até a próxima fase
 
@@ -44,6 +48,4 @@ make build
 
 [] Bloquear o personagem de atravessar paredes e objetos
 
-[] Adicionar save no jogo
-
-[] Deve ser possível adicionar inimigos dinamicamente no jogo
+[] Adicionar pontuação com base no número de inimigos derrotados

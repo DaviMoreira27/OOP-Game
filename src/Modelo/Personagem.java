@@ -83,10 +83,10 @@ public abstract class Personagem implements Serializable {
                 case "ZigueZague":
                     return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "skoot.png");
                 case "Hero":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "Robbo.png");
+                case "BichinhoVaiVemHorizontal":
                     return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "roboPink.png");
-                case "BichoVaiVemHorizontal":
-                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "roboPink.png");
-                case "BichoVaiVemVertical":
+                case "BichinhoVaiVemVertical":
                     return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "skoot.png");
                 case "Caveira":
                     return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "caveira.png");

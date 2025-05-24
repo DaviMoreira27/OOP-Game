@@ -131,16 +131,16 @@ public class SaveHandler {
             case "ZigueZague":
                 p = new ZigueZague(dto.image, dto.dano, dto.vida, true);
                 break;
-            case "BichoVaiVemHorizontal":
+            case "BichinhoVaiVemHorizontal":
                 p = new BichinhoVaiVemHorizontal(dto.image, dto.dano, dto.vida, true);
                 break;
-            case "BichoVaiVemVertical":
+            case "BichinhoVaiVemVertical":
                 p = new BichinhoVaiVemVertical(dto.image, dto.dano, dto.vida, true);
                 break;
             case "Caveira":
                 p = new Caveira(dto.image, dto.dano, dto.vida, true);
                 break;
-            case "Chase":
+            case "Chaser":
                 p = new Chaser(dto.image, dto.dano, dto.vida, true);
                 break;
             default:
