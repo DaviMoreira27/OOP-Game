@@ -5,12 +5,10 @@ public class BichinhoVaiVemHorizontal extends Personagem {
     private boolean bRight;
     int iContador;
 
-    public BichinhoVaiVemHorizontal(String sNomeImagePNG) {
-        super(sNomeImagePNG);
+    public BichinhoVaiVemHorizontal(String sNomeImagePNG, int cDano, int cVida, boolean imported) {
+        super(sNomeImagePNG, cDano, cVida, imported);
         bRight = true;
         iContador = 0;
-        this.vida = 3;
-        this.dano = 1;
     }
 
     public void autoDesenho() {

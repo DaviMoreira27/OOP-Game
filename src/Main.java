@@ -8,6 +8,7 @@ public class Main {
                 Tela tTela = new Tela();
                 tTela.setVisible(true);
                 tTela.setResizable(true);
+                tTela.setAlwaysOnTop(true);
                 tTela.createBufferStrategy(2);
                 tTela.go();
             }

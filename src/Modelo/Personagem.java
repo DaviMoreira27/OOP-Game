@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
@@ -21,13 +22,9 @@ public abstract class Personagem implements Serializable {
     protected int vida;
     protected int dano;
     protected boolean showVida = true;
+    protected String imagePath;
 
-    public boolean isbMortal() {
-        return bMortal;
-    }
-
-
-    protected Personagem(String sNomeImagePNG) {
+    protected Personagem(String sNomeImagePNG, int cDano, int cVida, boolean imported) {
         this.pPosicao = new Posicao(1, 1);
         /*
          * Acontece um erro se a imagem do personagem e a de um inimigo ficam uma sobre
@@ -40,16 +37,72 @@ public abstract class Personagem implements Serializable {
          */
         this.bTransponivel = true;
         this.bMortal = false;
+        this.vida = cVida;
+        this.dano = cDano;
+        this.imagePath = sNomeImagePNG;
+
         try {
-            iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + sNomeImagePNG);
+            if (!imported) {
+                iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + sNomeImagePNG);
+                Image img = iImage.getImage();
+                BufferedImage bi = new BufferedImage(Consts.CELL_SIDE, Consts.CELL_SIDE, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = bi.createGraphics();
+                g.drawImage(img, 0, 0, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                iImage = new ImageIcon(bi);
+                return;
+            }
+
+            boolean getFile = new File(sNomeImagePNG).exists();
+            System.out.println(getFile);
+
+            if (!getFile) {
+                iImage = this.getAssociatedImage(this.getClass().getSimpleName());
+                Image img = iImage.getImage();
+                BufferedImage bi = new BufferedImage(Consts.CELL_SIDE, Consts.CELL_SIDE, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = bi.createGraphics();
+                g.drawImage(img, 0, 0, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                iImage = new ImageIcon(bi);
+                System.out.println(iImage.getImageLoadStatus());
+                return;
+            }
+
+            iImage = new ImageIcon(sNomeImagePNG);
             Image img = iImage.getImage();
             BufferedImage bi = new BufferedImage(Consts.CELL_SIDE, Consts.CELL_SIDE, BufferedImage.TYPE_INT_ARGB);
             Graphics g = bi.createGraphics();
             g.drawImage(img, 0, 0, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
             iImage = new ImageIcon(bi);
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+    }
+
+    protected ImageIcon getAssociatedImage (String childClass) throws IOException, ClassNotFoundException {
+        try {
+            switch (childClass) {
+                case "ZigueZague":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "skoot.png");
+                case "Hero":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "Robbo.png");
+                case "BichinhoVaiVemHorizontal":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "roboPink.png");
+                case "BichinhoVaiVemVertical":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "skoot.png");
+                case "Caveira":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "caveira.png");
+                case "Chaser":
+                    return new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + "Chaser.png");
+                default:
+                    throw new ClassNotFoundException();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    public boolean isbMortal() {
+        return bMortal;
     }
 
     public void setVida(int vida) {
@@ -84,6 +137,10 @@ public abstract class Personagem implements Serializable {
 
     public boolean isbTransponivel() {
         return bTransponivel;
+    }
+
+    public ImageIcon getImage() {
+        return this.iImage;
     }
 
     public void setbTransponivel(boolean bTransponivel) {
