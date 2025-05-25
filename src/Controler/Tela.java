@@ -1,6 +1,8 @@
 package Controler;
 
 import Modelo.Personagem;
+import Modelo.PersonagemDTO;
+import Modelo.PersonagemIncompleto;
 import Modelo.Tiro;
 import Modelo.Caveira;
 import Modelo.Hero;
@@ -17,21 +19,36 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.util.List;
+import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
@@ -51,6 +68,38 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         this.setLayout(null);
         this.addMouseListener(this);
         this.addKeyListener(this);
+
+        new DropTarget(this, new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent fileDrop) {
+                try {
+                    Point mousePosition = fileDrop.getLocation();
+                    System.out.println("Arquivo solto na posição: " + mousePosition);
+
+                    fileDrop.acceptDrop(DnDConstants.ACTION_COPY);
+                    Transferable transferable = fileDrop.getTransferable();
+
+                    if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        @SuppressWarnings("unchecked")
+                        List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                        for (File file : files) {
+                            System.out.println("Arquivo: " + file.getAbsolutePath());
+
+                            int colunaMouse = (int) mousePosition.getX() / Consts.CELL_SIDE;
+                            int linhaMouse = (int) mousePosition.getY() / Consts.CELL_SIDE;
+                            Posicao p = new Posicao(linhaMouse, colunaMouse);
+
+                            Tela.this.loadCharacter(file, p);
+                        }
+                    }
+
+                    fileDrop.dropComplete(true);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    fileDrop.dropComplete(false);
+                }
+            }
+        });
 
         faseAtual = new ArrayList<>();
 
@@ -123,7 +172,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         this.add(menuPausa);
     }
 
-    private void loadGame () {
+    private void loadGame() {
         this.faseAtual = SaveHandler.carregarJogo();
 
         for (Personagem p : faseAtual) {
@@ -140,6 +189,66 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         this.cj.processaTudo(faseAtual);
         this.atualizaCamera();
         repaint();
+    }
+
+    // TODO: Refactor this method, its horrible
+    private void loadCharacter(File file, Posicao position) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+        ZipInputStream zis = new ZipInputStream(fis, StandardCharsets.UTF_8);
+        ZipEntry entry;
+        StringBuilder jsonBuilder = new StringBuilder();
+        String imagePath = null;
+
+        while ((entry = zis.getNextEntry()) != null) {
+            String entryName = entry.getName();
+            System.out.println(entryName);
+
+            if (entryName.endsWith("personagem.json")) {
+                byte[] buffer = new byte[1024];
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int len;
+                while ((len = zis.read(buffer)) > 0) {
+                    baos.write(buffer, 0, len);
+                }
+                String jsonContent = baos.toString(StandardCharsets.UTF_8);
+                jsonBuilder.append(jsonContent);
+                baos.close();
+            } else if (entryName.toLowerCase().matches(".*\\.(png|jpg|jpeg)")) {
+                File tempDir = new File(System.getProperty("java.io.tmpdir"));
+                File extractedImage = new File(tempDir, new File(entryName).getName());
+                try (FileOutputStream fos = new FileOutputStream(extractedImage)) {
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                }
+                imagePath = extractedImage.getAbsolutePath();
+            }
+            zis.closeEntry();
+        }
+        zis.close();
+
+        System.out.println("JSON lido: " + jsonBuilder.toString());
+        String json = jsonBuilder.toString().trim();
+
+        if (json.isEmpty()) {
+            throw new IOException("Arquivo personagem.json não encontrado ou está vazio.");
+        }
+
+        JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+        String classe = obj.get("classe").getAsString();
+        int vida = obj.get("vida").getAsInt();
+        int dano = obj.get("dano").getAsInt();
+        boolean mortal = obj.get("mortal").getAsBoolean();
+        boolean transponivel = obj.get("transponivel").getAsBoolean();
+
+        PersonagemIncompleto personagem = new PersonagemIncompleto(dano, vida, transponivel, mortal, classe);
+        PersonagemDTO dto = new PersonagemDTO(personagem, position, imagePath);
+        Personagem p = SaveHandler.criarPersonagemFromDTO(dto);
+        this.faseAtual.add(p);
+        this.cj.desenhaTudo(faseAtual);
+        this.cj.processaTudo(faseAtual);
     }
 
     public int getCameraLinha() {

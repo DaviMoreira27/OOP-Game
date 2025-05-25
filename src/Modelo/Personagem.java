@@ -23,6 +23,7 @@ public abstract class Personagem implements Serializable {
     protected int dano;
     protected boolean showVida = true;
     protected String imagePath;
+    protected boolean imported;
 
     protected Personagem(String sNomeImagePNG, int cDano, int cVida, boolean imported) {
         this.pPosicao = new Posicao(1, 1);
@@ -40,6 +41,7 @@ public abstract class Personagem implements Serializable {
         this.vida = cVida;
         this.dano = cDano;
         this.imagePath = sNomeImagePNG;
+        this.imported = imported;
 
         try {
             if (!imported) {
@@ -100,6 +102,7 @@ public abstract class Personagem implements Serializable {
             throw e;
         }
     }
+    
 
     public boolean isbMortal() {
         return bMortal;

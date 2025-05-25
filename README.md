@@ -38,7 +38,7 @@ make build
 
 [X] Adicionar save no jogo
 
-[-] Deve ser possível adicionar inimigos dinamicamente no jogo
+[X] Deve ser possível adicionar inimigos dinamicamente no jogo
 
 [] Adicionar mais inimigos que atiram, e perseguem o personagem
 
