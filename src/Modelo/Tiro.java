@@ -1,6 +1,7 @@
 package Modelo;
 
 import Auxiliar.Desenho;
+import Auxiliar.Posicao;
 
 public class Tiro extends Personagem {
     private double posLinha;
@@ -42,6 +43,19 @@ public class Tiro extends Personagem {
 
         int novaLinha = (int) Math.round(posLinha);
         int novaColuna = (int) Math.round(posColuna);
+
+        if (Desenho.acessoATelaDoJogo().ehParede(novaLinha, novaColuna)) {
+            Desenho.acessoATelaDoJogo().removePersonagem(this);
+            return;
+        }
+
+        for (Personagem p : Desenho.acessoATelaDoJogo().getFaseAtual()) {
+            if (p != this && !(p instanceof Hero) && p.getPosicao().igual(new Posicao(novaLinha, novaColuna))) {
+                p.receberDano(this.getDano());
+                Desenho.acessoATelaDoJogo().removePersonagem(this);
+                return;
+            }
+        }
 
         boolean podeMover = this.setPosicao(novaLinha, novaColuna);
         if (!podeMover) {

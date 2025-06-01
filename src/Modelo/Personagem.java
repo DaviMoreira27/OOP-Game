@@ -171,22 +171,40 @@ public abstract class Personagem implements Serializable {
     }
 
     public boolean setPosicao(int linha, int coluna) {
-        return pPosicao.setPosicao(linha, coluna);
+    // Verifica se não é parede antes de mover
+    if (!Auxiliar.Desenho.acessoATelaDoJogo().ehParede(linha, coluna)) {
+        // Verifica se já existe outro personagem na posição
+        for (Personagem p : Auxiliar.Desenho.acessoATelaDoJogo().getFaseAtual()) {
+            if (p != this && p.getPosicao().getLinha() == linha && p.getPosicao().getColuna() == coluna) {
+                return false; // Já ocupado!
+            }
+        }
+        this.pPosicao.setPosicao(linha, coluna);
+        return true;
+    }
+    return false;
+}
+
+    public void receberDano(int dano) {
+        this.vida -= dano;
+        if (this.vida <= 0) {
+            Desenho.acessoATelaDoJogo().removePersonagem(this);
+        }
     }
 
     public boolean moveUp() {
-        return this.pPosicao.moveUp();
+        return setPosicao(this.pPosicao.getLinha() - 1, this.pPosicao.getColuna());
     }
 
     public boolean moveDown() {
-        return this.pPosicao.moveDown();
+        return setPosicao(this.pPosicao.getLinha() + 1, this.pPosicao.getColuna());
     }
 
     public boolean moveRight() {
-        return this.pPosicao.moveRight();
+        return setPosicao(this.pPosicao.getLinha(), this.pPosicao.getColuna() + 1);
     }
 
     public boolean moveLeft() {
-        return this.pPosicao.moveLeft();
+        return setPosicao(this.pPosicao.getLinha(), this.pPosicao.getColuna() - 1);
     }
 }

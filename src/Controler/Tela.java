@@ -29,10 +29,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -61,8 +63,93 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private boolean jogoPausado = false;
     private JPanel menuPausa;
 
+    // ...imports e atributos...
+
+private int[][] mapa;
+
+private int faseAtualNumero = 1;
+
+private void carregarMapa(String caminho) throws IOException {
+    List<int[]> linhas = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
+        String linha;
+        while ((linha = br.readLine()) != null) {
+            String[] partes = linha.trim().split("");
+            int[] valores = new int[partes.length];
+            for (int i = 0; i < partes.length; i++) {
+                valores[i] = Integer.parseInt(partes[i]);
+            }
+            linhas.add(valores);
+        }
+    }
+    mapa = linhas.toArray(new int[0][]);
+}
+
+public void carregarProximaFase() {
+    faseAtualNumero++;
+    String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
+    try {
+        carregarMapa(nomeMapa);
+        faseAtual.clear();
+
+        // Adiciona personagens da nova fase
+        for (int linha = 0; linha < mapa.length; linha++) {
+            for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
+                switch (mapa[linha][coluna]) {
+                    case 2:
+                        ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
+                        inimigo.setPosicao(linha, coluna);
+                        this.addPersonagem(inimigo);
+                        break;
+                    // Adicione outros tipos de inimigos se quiser
+                }
+            }
+        }
+        // Reposiciona o herói no início da nova fase
+        hero.setPosicao(0, 7);
+        this.addPersonagem(hero);
+
+        atualizaCamera();
+        repaint();
+    } catch (IOException e) {
+        System.out.println("Fim do jogo ou fase não encontrada!");
+    }
+}
+
+private void checarFimDaFase() {
+    long inimigosRestantes = faseAtual.stream()
+        .filter(p -> !(p instanceof Hero))
+        .count();
+    if (inimigosRestantes == 0) {
+        carregarProximaFase();
+    }
+}
+
     public Tela() {
-        Desenho.setCenario(this);
+         Desenho.setCenario(this);
+        try {
+            carregarMapa("mapas/fase1.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        faseAtual = new ArrayList<>();
+
+        for (int linha = 0; linha < mapa.length; linha++) {
+            for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
+                switch (mapa[linha][coluna]) {
+                    case 2:
+                        ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
+                        inimigo.setPosicao(linha, coluna);
+                        this.addPersonagem(inimigo);
+                        break;
+                    case 3:
+                        // Aqui você pode marcar a sala final ou criar um objeto especial
+                        break;
+                    // Adicione outros tipos conforme necessário
+                }
+            }
+        }
         initComponents();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLayout(null);
@@ -101,35 +188,9 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             }
         });
 
-        faseAtual = new ArrayList<>();
-
         hero = new Hero("Robbo.png", 100, 10, false);
         hero.setPosicao(0, 7);
         this.addPersonagem(hero);
-
-        ZigueZague zz = new ZigueZague("robo.png", 60, 15, false);
-        zz.setPosicao(5, 5);
-        this.addPersonagem(zz);
-
-        BichinhoVaiVemHorizontal bBichinhoH = new BichinhoVaiVemHorizontal("roboPink.png", 40, 8, false);
-        bBichinhoH.setPosicao(3, 3);
-        this.addPersonagem(bBichinhoH);
-
-        BichinhoVaiVemHorizontal bBichinhoH2 = new BichinhoVaiVemHorizontal("roboPink.png", 40, 8, false);
-        bBichinhoH2.setPosicao(6, 6);
-        this.addPersonagem(bBichinhoH2);
-
-        BichinhoVaiVemVertical bVv = new BichinhoVaiVemVertical("caveira.png", 50, 12, false);
-        bVv.setPosicao(10, 10);
-        this.addPersonagem(bVv);
-
-        Caveira bV = new Caveira("caveira.png", 70, 20, false);
-        bV.setPosicao(9, 1);
-        this.addPersonagem(bV);
-
-        Chaser chase = new Chaser("Chaser.png", 80, 25, false);
-        chase.setPosicao(12, 12);
-        this.addPersonagem(chase);
 
         initMenuPausa();
         atualizaCamera();
@@ -275,7 +336,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         return g2;
     }
 
+    public List<Personagem> getFaseAtual() {
+        return this.faseAtual;
+    }
+
     public void paint(Graphics gOld) {
+
         Graphics g = this.getBufferStrategy().getDrawGraphics();
         g2 = g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
 
@@ -286,15 +352,21 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             for (int j = 0; j < colunasVisiveis; j++) {
                 int mapaLinha = cameraLinha + i;
                 int mapaColuna = cameraColuna + j;
-
-                if (mapaLinha < Consts.MUNDO_ALTURA && mapaColuna < Consts.MUNDO_LARGURA) {
+                if (mapaLinha < mapa.length && mapaColuna < mapa[0].length) {
                     try {
-                        Image newImage = Toolkit.getDefaultToolkit().getImage(
+                        if (mapa[mapaLinha][mapaColuna] == 1) {
+                            // desenhe parede
+                            Image parede = Toolkit.getDefaultToolkit().getImage(
                                 new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
-                        g2.drawImage(newImage, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE,
-                                Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                            g2.drawImage(parede, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                        } else {
+                            // desenhe chão
+                            Image chao = Toolkit.getDefaultToolkit().getImage(
+                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "blackTile.png");
+                            g2.drawImage(chao, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                        }
                     } catch (IOException ex) {
-                        Logger.getLogger(Tela.class.getName()).log(Level.SEVERE, null, ex);
+                        ex.printStackTrace();
                     }
                 }
             }
@@ -305,6 +377,8 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             this.cj.processaTudo(faseAtual);
         }
 
+        checarFimDaFase();
+
         if (jogoPausado) {
             atualizarMenuPausa();
         }
@@ -314,6 +388,10 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         if (!getBufferStrategy().contentsLost()) {
             getBufferStrategy().show();
         }
+    }
+
+    public boolean ehParede(int linha, int coluna) {
+        return mapa[linha][coluna] == 1;
     }
 
     public Hero getHero() {
@@ -362,16 +440,23 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         }
 
         if (!jogoPausado) {
-            if (e.getKeyCode() == KeyEvent.VK_C) {
-                this.faseAtual.clear();
-            } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                hero.moveUp();
+            int novaLinha = hero.getPosicao().getLinha();
+            int novaColuna = hero.getPosicao().getColuna();
+
+            if (e.getKeyCode() == KeyEvent.VK_UP) {
+                novaLinha--;
             } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                hero.moveDown();
+                novaLinha++;
             } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                hero.moveLeft();
+                novaColuna--;
             } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                hero.moveRight();
+                novaColuna++;
+            }
+
+            if (novaLinha >= 0 && novaLinha < mapa.length &&
+                novaColuna >= 0 && novaColuna < mapa[0].length &&
+                !ehParede(novaLinha, novaColuna)) {
+                hero.setPosicao(novaLinha, novaColuna);
             }
 
             this.atualizaCamera();
