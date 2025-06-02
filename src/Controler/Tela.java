@@ -4,13 +4,9 @@ import Modelo.Personagem;
 import Modelo.PersonagemDTO;
 import Modelo.PersonagemIncompleto;
 import Modelo.Tiro;
-import Modelo.Caveira;
 import Modelo.Hero;
-import Modelo.Chaser;
-import Modelo.BichinhoVaiVemHorizontal;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
-import Modelo.BichinhoVaiVemVertical;
 import Modelo.ZigueZague;
 import Auxiliar.Posicao;
 
@@ -40,8 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -62,8 +56,6 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private int cameraColuna = 0;
     private boolean jogoPausado = false;
     private JPanel menuPausa;
-
-    // ...imports e atributos...
 
 private int[][] mapa;
 

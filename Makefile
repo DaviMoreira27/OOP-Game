@@ -3,7 +3,7 @@ BUILD_DIR := build
 DIST_DIR := dist
 LIB_DIR := lib
 MAIN_CLASS := Main
-JAR_NAME := Game-name-here.jar
+JAR_NAME := Enter-the-class.jar
 GSON_JAR := $(LIB_DIR)/gson-2.13.1.jar
 
 SOURCES := $(shell find $(SRC_DIR) -name "*.java")
