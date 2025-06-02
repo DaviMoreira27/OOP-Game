@@ -87,6 +87,10 @@ private void carregarMapa(String caminho) throws IOException {
 
 public void carregarProximaFase() {
     faseAtualNumero++;
+    if(faseAtualNumero == 6){
+        System.out.println("Parabens! Voce concluiu nosso jogo!");
+        return;
+    }
     String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
     try {
         carregarMapa(nomeMapa);
@@ -111,8 +115,8 @@ public void carregarProximaFase() {
 
         atualizaCamera();
         repaint();
-    } catch (IOException e) {
-        System.out.println("Fim do jogo ou fase não encontrada!");
+    }catch(IOException e){
+        System.out.println("");
     }
 }
 
@@ -125,10 +129,11 @@ private void checarFimDaFase() {
     }
 }
 
-    public Tela() {
-         Desenho.setCenario(this);
+    public Tela(int faseInicial) {
+        Desenho.setCenario(this);
+        faseAtualNumero = faseInicial;
         try {
-            carregarMapa("mapas/fase1.txt");
+            carregarMapa("mapas/fase" + faseInicial + ".txt");
         } catch (IOException e) {
             e.printStackTrace();
         }

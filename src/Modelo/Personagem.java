@@ -151,6 +151,7 @@ public abstract class Personagem implements Serializable {
     }
 
     public void autoDesenho(){
+        
         Desenho.desenhar(this.iImage, this.pPosicao.getColuna(), this.pPosicao.getLinha()); 
 
         if (this.showVida) {
