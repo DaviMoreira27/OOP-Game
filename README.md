@@ -1,12 +1,14 @@
-# Project Name
-(commit test)
-A game developed using Java and OOP concepts for the SSC0504 class in the Systems Information course at USP.
+# Enter-The-Class
+Um jogo desenvolvido usando Java e conceitos de POO para a disciplina SSC0504 do curso de Sistemas de Informação da USP.
 
-## Makefile Commands
+### UML
+
+![UML do jogo](./oop-game-uml.png)
+
+## Comandos do Makefile
 
 ### `make build`
-
-Compiles all `.java` files from the `src/` directory and outputs the compiled `.class` files into the `build/` directory.
+Compila todos os arquivos `.java` do diretório `src/` e gera os arquivos `.class` compilados no diretório `build/`.
 
 ```bash
 make build
@@ -14,38 +16,16 @@ make build
 
 ### `make run`
 
-Compiles the project (if not already compiled) and runs the main class `(Main)` using the compiled files from `build/`.
+Compila o projeto e executa a classe principal (`Main`) usando os arquivos compilados de `build/`.
 
 ```bash
-make build
+make run
 ```
 
 ### `make export`
 
-Packages all compiled `.class` files into a single JAR file named `PROJECT-NAME-HERE.jar` in the `dist/` directory. It also sets the entry point `(Main-Class)` so that the JAR can be run directly.
+Empacota todos os arquivos .class compilados em um único arquivo JAR chamado `Enter-The-Class.jar` no diretório `dist/`. Também define o ponto de entrada (`Main-Class`) para que o JAR possa ser executado diretamente.
 
 ```bash
-make build
+make export
 ```
-
-## TODO
-
-[X] No clique do mouse, o personagem controlavel deve dar tiros
-
-[X] Implementar barra de vida no personagem principal e nos inimigos
-
-[X] Adicionar dano e colisões
-
-[X] Adicionar save no jogo
-
-[X] Deve ser possível adicionar inimigos dinamicamente no jogo
-
-[] Adicionar mais inimigos que atiram, e perseguem o personagem
-
-[] Adicionar bosses, inimigos com mais vida, dano e velocidade. Ao derrotar-los, transportar o personagem até a próxima fase
-
-[] Adicionar objetos e paredes no mapa
-
-[] Bloquear o personagem de atravessar paredes e objetos
-
-[] Adicionar pontuação com base no número de inimigos derrotados
