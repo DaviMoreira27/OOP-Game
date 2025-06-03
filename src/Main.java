@@ -26,6 +26,7 @@ public class Main {
         } catch (Exception e) {
             fase = 1;
         }
+        scanner.close();
         return fase;
     }
 }

@@ -57,69 +57,69 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private boolean jogoPausado = false;
     private JPanel menuPausa;
 
-private int[][] mapa;
+    private int[][] mapa;
 
-private int faseAtualNumero = 1;
+    private int faseAtualNumero = 1;
 
-private void carregarMapa(String caminho) throws IOException {
-    List<int[]> linhas = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-        String linha;
-        while ((linha = br.readLine()) != null) {
-            String[] partes = linha.trim().split("");
-            int[] valores = new int[partes.length];
-            for (int i = 0; i < partes.length; i++) {
-                valores[i] = Integer.parseInt(partes[i]);
+    private void carregarMapa(String caminho) throws IOException {
+        List<int[]> linhas = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.trim().split("");
+                int[] valores = new int[partes.length];
+                for (int i = 0; i < partes.length; i++) {
+                    valores[i] = Integer.parseInt(partes[i]);
+                }
+                linhas.add(valores);
             }
-            linhas.add(valores);
         }
+        mapa = linhas.toArray(new int[0][]);
     }
-    mapa = linhas.toArray(new int[0][]);
-}
 
-public void carregarProximaFase() {
-    faseAtualNumero++;
-    if(faseAtualNumero == 6){
-        System.out.println("Parabens! Voce concluiu nosso jogo!");
-        return;
-    }
-    String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
-    try {
-        carregarMapa(nomeMapa);
-        faseAtual.clear();
+    public void carregarProximaFase() {
+        faseAtualNumero++;
+        if (faseAtualNumero == 6) {
+            System.out.println("Parabens! Voce concluiu nosso jogo!");
+            return;
+        }
+        String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
+        try {
+            carregarMapa(nomeMapa);
+            faseAtual.clear();
 
-        // Adiciona personagens da nova fase
-        for (int linha = 0; linha < mapa.length; linha++) {
-            for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
-                switch (mapa[linha][coluna]) {
-                    case 2:
-                        ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
-                        inimigo.setPosicao(linha, coluna);
-                        this.addPersonagem(inimigo);
-                        break;
-                    // Adicione outros tipos de inimigos se quiser
+            // Adiciona personagens da nova fase
+            for (int linha = 0; linha < mapa.length; linha++) {
+                for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
+                    switch (mapa[linha][coluna]) {
+                        case 2:
+                            ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
+                            inimigo.setPosicao(linha, coluna);
+                            this.addPersonagem(inimigo);
+                            break;
+                        // Adicione outros tipos de inimigos se quiser
+                    }
                 }
             }
+            // Reposiciona o herói no início da nova fase
+            hero.setPosicao(0, 7);
+            this.addPersonagem(hero);
+
+            atualizaCamera();
+            repaint();
+        } catch (IOException e) {
+            System.out.println("");
         }
-        // Reposiciona o herói no início da nova fase
-        hero.setPosicao(0, 7);
-        this.addPersonagem(hero);
-
-        atualizaCamera();
-        repaint();
-    }catch(IOException e){
-        System.out.println("");
     }
-}
 
-private void checarFimDaFase() {
-    long inimigosRestantes = faseAtual.stream()
-        .filter(p -> !(p instanceof Hero))
-        .count();
-    if (inimigosRestantes == 0) {
-        carregarProximaFase();
+    private void checarFimDaFase() {
+        long inimigosRestantes = faseAtual.stream()
+                .filter(p -> !(p instanceof Hero))
+                .count();
+        if (inimigosRestantes == 0) {
+            carregarProximaFase();
+        }
     }
-}
 
     public Tela(int faseInicial) {
         Desenho.setCenario(this);
@@ -129,7 +129,7 @@ private void checarFimDaFase() {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         faseAtual = new ArrayList<>();
 
         for (int linha = 0; linha < mapa.length; linha++) {
@@ -354,13 +354,15 @@ private void checarFimDaFase() {
                         if (mapa[mapaLinha][mapaColuna] == 1) {
                             // desenhe parede
                             Image parede = Toolkit.getDefaultToolkit().getImage(
-                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
-                            g2.drawImage(parede, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                                    new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
+                            g2.drawImage(parede, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE,
+                                    Consts.CELL_SIDE, null);
                         } else {
                             // desenhe chão
                             Image chao = Toolkit.getDefaultToolkit().getImage(
-                                new java.io.File(".").getCanonicalPath() + Consts.PATH + "blackTile.png");
-                            g2.drawImage(chao, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE, Consts.CELL_SIDE, null);
+                                    new java.io.File(".").getCanonicalPath() + Consts.PATH + "blackTile.png");
+                            g2.drawImage(chao, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE,
+                                    Consts.CELL_SIDE, null);
                         }
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -436,6 +438,14 @@ private void checarFimDaFase() {
             return;
         }
 
+        if (e.getKeyCode() == KeyEvent.VK_S) {
+            SaveHandler.salvarJogo(faseAtual);
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_L) {
+            SaveHandler.carregarJogo();
+        }
+
         if (!jogoPausado) {
             int novaLinha = hero.getPosicao().getLinha();
             int novaColuna = hero.getPosicao().getColuna();
@@ -451,8 +461,8 @@ private void checarFimDaFase() {
             }
 
             if (novaLinha >= 0 && novaLinha < mapa.length &&
-                novaColuna >= 0 && novaColuna < mapa[0].length &&
-                !ehParede(novaLinha, novaColuna)) {
+                    novaColuna >= 0 && novaColuna < mapa[0].length &&
+                    !ehParede(novaLinha, novaColuna)) {
                 hero.setPosicao(novaLinha, novaColuna);
             }
 

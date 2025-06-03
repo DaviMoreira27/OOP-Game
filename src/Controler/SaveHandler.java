@@ -27,6 +27,7 @@ import Modelo.Hero;
 import Modelo.Personagem;
 import Modelo.PersonagemDTO;
 import Modelo.ZigueZague;
+import exceptions.GameException;
 
 public class SaveHandler {
 
@@ -36,8 +37,18 @@ public class SaveHandler {
             List<PersonagemDTO> dtos = converterParaDTOs(faseAtual);
             String json = gson.toJson(dtos);
 
-            String downloadsPath = System.getProperty("user.home") + File.separator + "Downloads";
-            File outputFile = new File(downloadsPath, "savegame.zip");
+            String currentPath = System.getProperty("user.dir");
+
+            File savesDir = new File(currentPath, "saves");
+            if (!savesDir.exists()) {
+                boolean created = savesDir.mkdirs();
+                if (!created) {
+                    System.err.println("Erro ao criar a pasta 'saves'");
+                    return;
+                }
+            }
+
+            File outputFile = new File(savesDir, "savegame.zip");
 
             FileOutputStream fos = new FileOutputStream(outputFile);
             ZipOutputStream zos = new ZipOutputStream(fos, StandardCharsets.UTF_8);
@@ -65,8 +76,13 @@ public class SaveHandler {
 
         try {
             // TODO: Permitir que o usuario escolha aonde está localizado o arquivo
-            String downloadsPath = System.getProperty("user.home") + File.separator + "Downloads";
-            File inputFile = new File(downloadsPath, "savegame.zip");
+            String currentPath = System.getProperty("user.dir");
+            File savesDir = new File(currentPath, "saves");
+            File inputFile = new File(savesDir, "savegame.zip");
+
+            if (!inputFile.exists()) {
+                throw new Exception("Não há nenhum arquivo de save para o jogo");
+            }
 
             FileInputStream fis = new FileInputStream(inputFile);
             ZipInputStream zis = new ZipInputStream(fis, StandardCharsets.UTF_8);
@@ -107,6 +123,11 @@ public class SaveHandler {
             System.out.println("Jogo carregado com sucesso.");
         } catch (Exception e) {
             e.printStackTrace();
+
+            if (e instanceof GameException) {
+                System.out.println(e.getMessage());
+            }
+
             System.out.println("Erro ao carregar o jogo.");
         }
 
