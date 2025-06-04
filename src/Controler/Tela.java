@@ -97,31 +97,26 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
                     switch (mapa[linha][coluna]) {
                         case 2:
-                            System.out.println("zigue zague");
                             ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
                             inimigo.setPosicao(linha, coluna);
                             this.addPersonagem(inimigo);
                             break;
                         case 3:
-                            System.out.println("Horinz");
                             BichinhoVaiVemHorizontal inimigoH = new BichinhoVaiVemHorizontal("RoboPink.png", 30, 20, false);
                             inimigoH.setPosicao(linha, coluna);
                             this.addPersonagem(inimigoH);
                             break;
                         case 4:
-                            System.out.println("vert");
                             BichinhoVaiVemVertical inimigoV = new BichinhoVaiVemVertical("skoot.png", 60, 15, false);
                             inimigoV.setPosicao(linha, coluna);
                             this.addPersonagem(inimigoV);
                             break;
                         case 5:
-                            System.out.println("chaser");
                             Chaser chaser = new Chaser("Chaser.png", 20, 15, false);
                             chaser.setPosicao(linha, coluna);
                             this.addPersonagem(chaser);
                             break;
                         case 6:
-                            System.out.println("cav");
                             Caveira caveira = new Caveira("caveira.png", 40, 30, false);
                             caveira.setPosicao(linha, coluna);
                             this.addPersonagem(caveira);
@@ -374,6 +369,9 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void removePersonagem(Personagem umPersonagem) {
+        if(!(umPersonagem instanceof Hero)&& !(umPersonagem instanceof Tiro)){
+            pontuacao++;
+        }
         faseAtual.remove(umPersonagem);
     }
 
@@ -384,6 +382,8 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public List<Personagem> getFaseAtual() {
         return this.faseAtual;
     }
+
+    private int pontuacao = 0;
 
     public void paint(Graphics gOld) {
 
@@ -429,7 +429,9 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         if (jogoPausado) {
             atualizarMenuPausa();
         }
-
+        g2.setColor(Color.YELLOW);
+        g2.setFont(new Font("Arial", Font.BOLD, 24));
+        g2.drawString("Pontuação: " + pontuacao, 20, 40);
         g.dispose();
         g2.dispose();
         if (!getBufferStrategy().contentsLost()) {
@@ -532,8 +534,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         repaint();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
