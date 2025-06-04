@@ -24,7 +24,7 @@ public class Chaser extends Personagem {
         super(sNomeImagePNG, cDano, cVida, imported);
         iDirectionV = true;
         iDirectionH = true;
-        this.bTransponivel = true;
+        this.bTransponivel = false;
     }
 
     public void computeDirection(Posicao heroPos) {
