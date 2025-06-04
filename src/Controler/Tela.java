@@ -7,7 +7,6 @@ import Modelo.Tiro;
 import Modelo.Hero;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
-import Modelo.ZigueZague;
 import Auxiliar.Posicao;
 
 import java.awt.Color;
@@ -25,12 +24,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -57,140 +54,71 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private boolean jogoPausado = false;
     private JPanel menuPausa;
 
-    private int[][] mapa;
+    private GerenciadorDeFases gerenciadorDeFases;
 
-    private int faseAtualNumero = 1;
-
-    private void carregarMapa(String caminho) throws IOException {
-        List<int[]> linhas = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                String[] partes = linha.trim().split("");
-                int[] valores = new int[partes.length];
-                for (int i = 0; i < partes.length; i++) {
-                    valores[i] = Integer.parseInt(partes[i]);
+    public Tela(int faseInicial) {
+        try {
+            Desenho.setCenario(this);
+            hero = new Hero("Robbo.png", 100, 10, false);
+            System.out.println("asdasdad");
+            this.gerenciadorDeFases = new GerenciadorDeFases(faseInicial);
+            this.faseAtual = this.gerenciadorDeFases.getFaseAtual();
+    
+            initComponents();
+            this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            this.setLayout(null);
+            this.addMouseListener(this);
+            this.addKeyListener(this);
+    
+            new DropTarget(this, new DropTargetAdapter() {
+                @Override
+                public void drop(DropTargetDropEvent fileDrop) {
+                    try {
+                        Point mousePosition = fileDrop.getLocation();
+                        fileDrop.acceptDrop(DnDConstants.ACTION_COPY);
+                        Transferable transferable = fileDrop.getTransferable();
+    
+                        if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                            @SuppressWarnings("unchecked")
+                            List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
+                            for (File file : files) {
+                                int colunaMouse = (int) mousePosition.getX() / Consts.CELL_SIDE;
+                                int linhaMouse = (int) mousePosition.getY() / Consts.CELL_SIDE;
+                                Posicao p = new Posicao(linhaMouse, colunaMouse);
+                                Tela.this.loadCharacter(file, p);
+                            }
+                        }
+                        fileDrop.dropComplete(true);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        fileDrop.dropComplete(false);
+                    }
                 }
-                linhas.add(valores);
-            }
+            });
+    
+            hero.setPosicao(0, 7);
+            this.addPersonagem(hero);
+    
+            initMenuPausa();
+            atualizaCamera();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        mapa = linhas.toArray(new int[0][]);
+        
     }
 
     public void carregarProximaFase() {
-        faseAtualNumero++;
-        if (faseAtualNumero == 6) {
-            System.out.println("Parabens! Voce concluiu nosso jogo!");
-            return;
-        }
-        String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
-        try {
-            carregarMapa(nomeMapa);
-            faseAtual.clear();
-
-            // Adiciona personagens da nova fase
-            for (int linha = 0; linha < mapa.length; linha++) {
-                for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
-                    switch (mapa[linha][coluna]) {
-                        case 2:
-                            ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
-                            inimigo.setPosicao(linha, coluna);
-                            this.addPersonagem(inimigo);
-                            break;
-                        // Adicione outros tipos de inimigos se quiser
-                    }
-                }
-            }
-            // Reposiciona o herói no início da nova fase
-            hero.setPosicao(0, 7);
-            this.addPersonagem(hero);
-
-            atualizaCamera();
-            repaint();
-        } catch (IOException e) {
-            System.out.println("");
-        }
+        gerenciadorDeFases.carregarProximaFase(hero);
+        faseAtual = gerenciadorDeFases.getFaseAtual();
+        atualizaCamera();
+        repaint();
     }
 
-    private void checarFimDaFase() {
-        long inimigosRestantes = faseAtual.stream()
-                .filter(p -> !(p instanceof Hero))
-                .count();
+    public void checarFimDaFase() {
+        long inimigosRestantes = faseAtual.stream().filter(p -> !(p instanceof Hero)).count();
         if (inimigosRestantes == 0) {
             carregarProximaFase();
         }
-    }
-
-    public Tela(int faseInicial) {
-        Desenho.setCenario(this);
-        faseAtualNumero = faseInicial;
-        try {
-            carregarMapa("mapas/fase" + faseInicial + ".txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        faseAtual = new ArrayList<>();
-
-        for (int linha = 0; linha < mapa.length; linha++) {
-            for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
-                switch (mapa[linha][coluna]) {
-                    case 2:
-                        ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
-                        inimigo.setPosicao(linha, coluna);
-                        this.addPersonagem(inimigo);
-                        break;
-                    case 3:
-                        // Aqui você pode marcar a sala final ou criar um objeto especial
-                        break;
-                    // Adicione outros tipos conforme necessário
-                }
-            }
-        }
-        initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.setLayout(null);
-        this.addMouseListener(this);
-        this.addKeyListener(this);
-
-        new DropTarget(this, new DropTargetAdapter() {
-            @Override
-            public void drop(DropTargetDropEvent fileDrop) {
-                try {
-                    Point mousePosition = fileDrop.getLocation();
-                    System.out.println("Arquivo solto na posição: " + mousePosition);
-
-                    fileDrop.acceptDrop(DnDConstants.ACTION_COPY);
-                    Transferable transferable = fileDrop.getTransferable();
-
-                    if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                        @SuppressWarnings("unchecked")
-                        List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
-                        for (File file : files) {
-                            System.out.println("Arquivo: " + file.getAbsolutePath());
-
-                            int colunaMouse = (int) mousePosition.getX() / Consts.CELL_SIDE;
-                            int linhaMouse = (int) mousePosition.getY() / Consts.CELL_SIDE;
-                            Posicao p = new Posicao(linhaMouse, colunaMouse);
-
-                            Tela.this.loadCharacter(file, p);
-                        }
-                    }
-
-                    fileDrop.dropComplete(true);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    fileDrop.dropComplete(false);
-                }
-            }
-        });
-
-        hero = new Hero("Robbo.png", 100, 10, false);
-        hero.setPosicao(0, 7);
-        this.addPersonagem(hero);
-
-        initMenuPausa();
-        atualizaCamera();
     }
 
     private void initMenuPausa() {
@@ -338,12 +266,13 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void paint(Graphics gOld) {
-
         Graphics g = this.getBufferStrategy().getDrawGraphics();
         g2 = g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
 
         int linhasVisiveis = getHeight() / Consts.CELL_SIDE;
         int colunasVisiveis = getWidth() / Consts.CELL_SIDE;
+        
+        int[][] mapa = this.gerenciadorDeFases.getMapa();
 
         for (int i = 0; i < linhasVisiveis; i++) {
             for (int j = 0; j < colunasVisiveis; j++) {
@@ -351,19 +280,16 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 int mapaColuna = cameraColuna + j;
                 if (mapaLinha < mapa.length && mapaColuna < mapa[0].length) {
                     try {
+                        Image img;
                         if (mapa[mapaLinha][mapaColuna] == 1) {
-                            // desenhe parede
-                            Image parede = Toolkit.getDefaultToolkit().getImage(
+                            img = Toolkit.getDefaultToolkit().getImage(
                                     new java.io.File(".").getCanonicalPath() + Consts.PATH + "bricks.png");
-                            g2.drawImage(parede, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE,
-                                    Consts.CELL_SIDE, null);
                         } else {
-                            // desenhe chão
-                            Image chao = Toolkit.getDefaultToolkit().getImage(
+                            img = Toolkit.getDefaultToolkit().getImage(
                                     new java.io.File(".").getCanonicalPath() + Consts.PATH + "blackTile.png");
-                            g2.drawImage(chao, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE,
-                                    Consts.CELL_SIDE, null);
                         }
+                        g2.drawImage(img, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE,
+                                Consts.CELL_SIDE, Consts.CELL_SIDE, null);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -390,6 +316,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public boolean ehParede(int linha, int coluna) {
+        int[][] mapa = this.gerenciadorDeFases.getMapa();
         return mapa[linha][coluna] == 1;
     }
 
@@ -460,8 +387,8 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 novaColuna++;
             }
 
-            if (novaLinha >= 0 && novaLinha < mapa.length &&
-                    novaColuna >= 0 && novaColuna < mapa[0].length &&
+            if (novaLinha >= 0 && novaLinha < this.gerenciadorDeFases.getMapa().length &&
+                    novaColuna >= 0 && novaColuna < this.gerenciadorDeFases.getMapa()[0].length &&
                     !ehParede(novaLinha, novaColuna)) {
                 hero.setPosicao(novaLinha, novaColuna);
             }
