@@ -9,7 +9,7 @@ public class Tiro extends Personagem {
     private final double deltaLinha;
     private final double deltaColuna;
     private int distanciaPercorrida = 0;
-    private static final int DISTANCIA_MAXIMA = 5;
+    private static final int DISTANCIA_MAXIMA = 20;
 
     public Tiro(String sNomeImagePNG, int linhaInicial, int colunaInicial, int linhaMouse, int colunaMouse, int cDano,
             int cVida, boolean imported) {
@@ -31,38 +31,43 @@ public class Tiro extends Personagem {
 
     @Override
     public void autoDesenho() {
-        super.autoDesenho();
+        try {
+            super.autoDesenho();
 
-        if (distanciaPercorrida >= DISTANCIA_MAXIMA) {
-            Desenho.acessoATelaDoJogo().removePersonagem(this);
-            return;
-        }
-
-        posLinha += deltaLinha;
-        posColuna += deltaColuna;
-
-        int novaLinha = (int) Math.round(posLinha);
-        int novaColuna = (int) Math.round(posColuna);
-
-        if (Desenho.acessoATelaDoJogo().ehParede(novaLinha, novaColuna)) {
-            Desenho.acessoATelaDoJogo().removePersonagem(this);
-            return;
-        }
-
-        for (Personagem p : Desenho.acessoATelaDoJogo().getFaseAtual()) {
-            if (p != this && !(p instanceof Hero) && p.getPosicao().igual(new Posicao(novaLinha, novaColuna))) {
-                p.receberDano(this.getDano());
+            if (distanciaPercorrida >= DISTANCIA_MAXIMA) {
                 Desenho.acessoATelaDoJogo().removePersonagem(this);
                 return;
             }
-        }
 
-        boolean podeMover = this.setPosicao(novaLinha, novaColuna);
-        if (!podeMover) {
-            Desenho.acessoATelaDoJogo().removePersonagem(this);
-            return;
-        }
+            posLinha += deltaLinha;
+            posColuna += deltaColuna;
 
-        distanciaPercorrida++;
+            int novaLinha = (int) Math.round(posLinha);
+            int novaColuna = (int) Math.round(posColuna);
+
+            if (Desenho.acessoATelaDoJogo().ehParede(novaLinha, novaColuna)) {
+                Desenho.acessoATelaDoJogo().removePersonagem(this);
+                return;
+            }
+
+            for (Personagem p : Desenho.acessoATelaDoJogo().getFaseAtual()) {
+                if (p != this && !(p instanceof Hero) && p.getPosicao().igual(new Posicao(novaLinha, novaColuna))) {
+                    p.receberDano(this.getDano());
+                    Desenho.acessoATelaDoJogo().removePersonagem(this);
+                    return;
+                }
+            }
+
+            boolean podeMover = this.setPosicao(novaLinha, novaColuna);
+            if (!podeMover) {
+                Desenho.acessoATelaDoJogo().removePersonagem(this);
+                return;
+            }
+
+            distanciaPercorrida++;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
     }
 }

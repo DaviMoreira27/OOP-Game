@@ -11,6 +11,7 @@ import Modelo.ZigueZague;
 import Auxiliar.Posicao;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -61,65 +62,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
 
     private int faseAtualNumero = 1;
 
-    private void carregarMapa(String caminho) throws IOException {
-        List<int[]> linhas = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
-            String linha;
-            while ((linha = br.readLine()) != null) {
-                String[] partes = linha.trim().split("");
-                int[] valores = new int[partes.length];
-                for (int i = 0; i < partes.length; i++) {
-                    valores[i] = Integer.parseInt(partes[i]);
-                }
-                linhas.add(valores);
-            }
-        }
-        mapa = linhas.toArray(new int[0][]);
-    }
-
-    public void carregarProximaFase() {
-        faseAtualNumero++;
-        if (faseAtualNumero == 6) {
-            System.out.println("Parabens! Voce concluiu nosso jogo!");
-            return;
-        }
-        String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
-        try {
-            carregarMapa(nomeMapa);
-            faseAtual.clear();
-
-            // Adiciona personagens da nova fase
-            for (int linha = 0; linha < mapa.length; linha++) {
-                for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
-                    switch (mapa[linha][coluna]) {
-                        case 2:
-                            ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
-                            inimigo.setPosicao(linha, coluna);
-                            this.addPersonagem(inimigo);
-                            break;
-                        // Adicione outros tipos de inimigos se quiser
-                    }
-                }
-            }
-            // Reposiciona o herói no início da nova fase
-            hero.setPosicao(0, 7);
-            this.addPersonagem(hero);
-
-            atualizaCamera();
-            repaint();
-        } catch (IOException e) {
-            System.out.println("");
-        }
-    }
-
-    private void checarFimDaFase() {
-        long inimigosRestantes = faseAtual.stream()
-                .filter(p -> !(p instanceof Hero))
-                .count();
-        if (inimigosRestantes == 0) {
-            carregarProximaFase();
-        }
-    }
+   
 
     public Tela(int faseInicial) {
         Desenho.setCenario(this);
@@ -191,6 +134,66 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
 
         initMenuPausa();
         atualizaCamera();
+    }
+
+    private void carregarMapa(String caminho) throws IOException {
+        List<int[]> linhas = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
+            String linha;
+            while ((linha = br.readLine()) != null) {
+                String[] partes = linha.trim().split("");
+                int[] valores = new int[partes.length];
+                for (int i = 0; i < partes.length; i++) {
+                    valores[i] = Integer.parseInt(partes[i]);
+                }
+                linhas.add(valores);
+            }
+        }
+        mapa = linhas.toArray(new int[0][]);
+    }
+
+    public void carregarProximaFase() {
+        faseAtualNumero++;
+        if (faseAtualNumero == 6) {
+            System.out.println("Parabens! Voce concluiu nosso jogo!");
+            return;
+        }
+        String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
+        try {
+            carregarMapa(nomeMapa);
+            faseAtual.clear();
+
+            // Adiciona personagens da nova fase
+            for (int linha = 0; linha < mapa.length; linha++) {
+                for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
+                    switch (mapa[linha][coluna]) {
+                        case 2:
+                            ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
+                            inimigo.setPosicao(linha, coluna);
+                            this.addPersonagem(inimigo);
+                            break;
+                        // Adicione outros tipos de inimigos se quiser
+                    }
+                }
+            }
+            // Reposiciona o herói no início da nova fase
+            hero.setPosicao(0, 7);
+            this.addPersonagem(hero);
+
+            atualizaCamera();
+            repaint();
+        } catch (IOException e) {
+            System.out.println("");
+        }
+    }
+
+    private void checarFimDaFase() {
+        long inimigosRestantes = faseAtual.stream()
+                .filter(p -> !(p instanceof Hero))
+                .count();
+        if (inimigosRestantes == 0) {
+            carregarProximaFase();
+        }
     }
 
     private void initMenuPausa() {
@@ -472,12 +475,16 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         }
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         int linhaHeroi = hero.getPosicao().getLinha();
         int colunaHeroi = hero.getPosicao().getColuna();
 
-        int colunaMouse = e.getX() / Consts.CELL_SIDE;
-        int linhaMouse = e.getY() / Consts.CELL_SIDE;
+        int mouseX = e.getX() - getInsets().left;
+        int mouseY = e.getY() - getInsets().top;
+
+        int colunaMouse = mouseX / Consts.CELL_SIDE;
+        int linhaMouse = mouseY / Consts.CELL_SIDE;
 
         Tiro tiro = new Tiro("fire.png", linhaHeroi, colunaHeroi, linhaMouse, colunaMouse, 10, 1, false);
         Desenho.acessoATelaDoJogo().addPersonagem(tiro);
@@ -485,8 +492,6 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         repaint();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -503,9 +508,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                         .addGap(0, 500, Short.MAX_VALUE));
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-     // Variables declaration - do not modify//GEN-BEGIN:variables
-     // End of variables declaration//GEN-END:variables
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(Consts.CELL_SIDE * Consts.RES, Consts.CELL_SIDE * Consts.RES);
+    }
 
     public void mouseMoved(MouseEvent e) {
     }

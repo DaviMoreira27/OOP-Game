@@ -33,9 +33,16 @@ public class ControleDeJogo {
             }
 
             // Colisão com o herói
-            if (hero.getPosicao().igual(p.getPosicao())) {
-                if (!p.isbTransponivel() && p.getDano() > 0) {
-                    hero.tomarDano(p.getDano());
+            if (!(p instanceof Hero) && !(p instanceof Tiro)) {
+                System.out
+                        .println("Posicao Hero " + hero.getPosicao().getColuna() + " " + hero.getPosicao().getLinha());
+
+                System.out.println("Posicao Inimigo " + p.getPosicao().getColuna() + " " + p.getPosicao().getLinha());
+                if (hero.getPosicao().igual(p.getPosicao())) {
+                    System.out.println("Teste");
+                    if (!p.isbTransponivel() && p.getDano() > 0) {
+                        hero.tomarDano(p.getDano());
+                    }
                 }
             }
         }
@@ -46,14 +53,12 @@ public class ControleDeJogo {
             if (p1 instanceof Tiro) {
                 for (int j = 1; j < umaFase.size(); j++) {
                     Personagem p2 = umaFase.get(j);
-                    if (
-                        p2 != p1 &&
-                        !(p2 instanceof Tiro) &&
-                        p1.getPosicao().igual(p2.getPosicao())
-                    ) {
-                        p2.tomarDano(1); // Dano do tiro
-                        paraRemover.add(p1); // Remove o tiro
-                        break; // Um tiro só atinge um alvo
+                    if (p2 != p1 &&
+                            !(p2 instanceof Tiro) &&
+                            p1.getPosicao().igual(p2.getPosicao())) {
+                        p2.tomarDano(p1.getDano());
+                        paraRemover.add(p1); 
+                        break;
                     }
                 }
             }
@@ -68,7 +73,10 @@ public class ControleDeJogo {
         umaFase.removeAll(paraRemover);
     }
 
-    /*Retorna true se a posicao p é válida para Hero com relacao a todos os personagens no array*/
+    /*
+     * Retorna true se a posicao p é válida para Hero com relacao a todos os
+     * personagens no array
+     */
     public boolean ehPosicaoValida(ArrayList<Personagem> umaFase, Posicao p) {
         Personagem pIesimoPersonagem;
         for (int i = 1; i < umaFase.size(); i++) {
