@@ -9,6 +9,7 @@ C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\except
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\exceptions\LoadGameException.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\BichinhoVaiVemHorizontal.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\BichinhoVaiVemVertical.java
+C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\BlocoMovel.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\Caveira.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\Chaser.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\Fogo.java

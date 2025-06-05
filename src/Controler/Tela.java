@@ -6,6 +6,7 @@ import Modelo.PersonagemIncompleto;
 import Modelo.Tiro;
 import Modelo.BichinhoVaiVemHorizontal;
 import Modelo.BichinhoVaiVemVertical;
+import Modelo.BlocoMovel;
 import Modelo.Caveira;
 import Modelo.Chaser;
 import Modelo.Hero;
@@ -121,6 +122,11 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                             caveira.setPosicao(linha, coluna);
                             this.addPersonagem(caveira);
                             break;
+                        case 7:
+                            BlocoMovel bloco = new BlocoMovel("Mesa.png", 0, 1, false);
+                            bloco.setPosicao(linha, coluna);
+                            this.addPersonagem(bloco);
+                            break;
                     }
                 }
             }
@@ -185,6 +191,11 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                         caveira.setPosicao(linha, coluna);
                         this.addPersonagem(caveira);
                         break;
+                    case 7:
+                            BlocoMovel bloco = new BlocoMovel("Mesa.png", 0, 1, false);
+                            bloco.setPosicao(linha, coluna);
+                            this.addPersonagem(bloco);
+                            break;
                 }
             }
         }
@@ -479,46 +490,96 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         timer.schedule(task, 0, Consts.PERIOD);
     }
 
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_P) {
-            jogoPausado = !jogoPausado;
-            menuPausa.setVisible(jogoPausado);
-            return;
+public void keyPressed(KeyEvent e) {
+    if (e.getKeyCode() == KeyEvent.VK_P) {
+        jogoPausado = !jogoPausado;
+        menuPausa.setVisible(jogoPausado);
+        return;
+    }
+
+    if (e.getKeyCode() == KeyEvent.VK_S) {
+        SaveHandler.salvarJogo(faseAtual);
+    }
+
+    if (e.getKeyCode() == KeyEvent.VK_L) {
+        SaveHandler.carregarJogo();
+    }
+
+    if (!jogoPausado) {
+        int linhaHeroi = hero.getPosicao().getLinha();
+        int colunaHeroi = hero.getPosicao().getColuna();
+        int novaLinha = linhaHeroi;
+        int novaColuna = colunaHeroi;
+
+        // Inicialize dLinha e dColuna
+        int dLinha = 0, dColuna = 0;
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            dLinha = -1;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            dLinha = 1;
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            dColuna = -1;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            dColuna = 1;
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_S) {
-            SaveHandler.salvarJogo(faseAtual);
-        }
+        novaLinha += dLinha;
+        novaColuna += dColuna;
 
-        if (e.getKeyCode() == KeyEvent.VK_L) {
-            SaveHandler.carregarJogo();
-        }
+        boolean moveuBloco = false;
+        for (Personagem p : new ArrayList<>(faseAtual)) {
+            if (p instanceof BlocoMovel &&
+                p.getPosicao().getLinha() == novaLinha &&
+                p.getPosicao().getColuna() == novaColuna) {
 
-        if (!jogoPausado) {
-            int novaLinha = hero.getPosicao().getLinha();
-            int novaColuna = hero.getPosicao().getColuna();
+                int blocoNovaLinha = novaLinha + dLinha;
+                int blocoNovaColuna = novaColuna + dColuna;
 
-            if (e.getKeyCode() == KeyEvent.VK_UP) {
-                novaLinha--;
-            } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                novaLinha++;
-            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                novaColuna--;
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                novaColuna++;
+                boolean podeMover = blocoNovaLinha >= 0 && blocoNovaLinha < mapa.length &&
+                                    blocoNovaColuna >= 0 && blocoNovaColuna < mapa[0].length &&
+                                    !ehParede(blocoNovaLinha, blocoNovaColuna);
+
+                for (Personagem outro : faseAtual) {
+                    if (outro instanceof BlocoMovel &&
+                        outro.getPosicao().getLinha() == blocoNovaLinha &&
+                        outro.getPosicao().getColuna() == blocoNovaColuna) {
+                        podeMover = false;
+                        break;
+                    }
+                }
+
+                if (podeMover) {
+                    p.setPosicao(blocoNovaLinha, blocoNovaColuna);
+                    moveuBloco = true;
+                } else {
+                    return; // Não move o herói se não puder mover o bloco
+                }
             }
+        }
 
-            if (novaLinha >= 0 && novaLinha < mapa.length &&
-                    novaColuna >= 0 && novaColuna < mapa[0].length &&
-                    !ehParede(novaLinha, novaColuna)) {
+        // Move o herói se não for parede e (se for bloco, só se moveu o bloco)
+        if (novaLinha >= 0 && novaLinha < mapa.length &&
+            novaColuna >= 0 && novaColuna < mapa[0].length &&
+            !ehParede(novaLinha, novaColuna)) {
+            boolean temBloco = false;
+            for (Personagem p : faseAtual) {
+                if (p instanceof BlocoMovel &&
+                    p.getPosicao().getLinha() == novaLinha &&
+                    p.getPosicao().getColuna() == novaColuna) {
+                    temBloco = true;
+                    break;
+                }
+            }
+            if (!temBloco || moveuBloco) {
                 hero.setPosicao(novaLinha, novaColuna);
             }
-
-            this.atualizaCamera();
-            this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
-                    + (hero.getPosicao().getLinha()));
         }
+
+        this.atualizaCamera();
+        this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
+                + (hero.getPosicao().getLinha()));
     }
+}
     public void mousePressed(MouseEvent e) {
         int linhaHeroi = hero.getPosicao().getLinha();
         int colunaHeroi = hero.getPosicao().getColuna();
