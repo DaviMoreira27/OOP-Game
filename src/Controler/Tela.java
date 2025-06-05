@@ -97,27 +97,27 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
                     switch (mapa[linha][coluna]) {
                         case 2:
-                            ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
+                            ZigueZague inimigo = new ZigueZague("inimigoA.png", 60, 15, false);
                             inimigo.setPosicao(linha, coluna);
                             this.addPersonagem(inimigo);
                             break;
                         case 3:
-                            BichinhoVaiVemHorizontal inimigoH = new BichinhoVaiVemHorizontal("RoboPink.png", 30, 20, false);
+                            BichinhoVaiVemHorizontal inimigoH = new BichinhoVaiVemHorizontal("inimigoh.png", 30, 20, false);
                             inimigoH.setPosicao(linha, coluna);
                             this.addPersonagem(inimigoH);
                             break;
                         case 4:
-                            BichinhoVaiVemVertical inimigoV = new BichinhoVaiVemVertical("skoot.png", 60, 15, false);
+                            BichinhoVaiVemVertical inimigoV = new BichinhoVaiVemVertical("inimigoV.png", 60, 15, false);
                             inimigoV.setPosicao(linha, coluna);
                             this.addPersonagem(inimigoV);
                             break;
                         case 5:
-                            Chaser chaser = new Chaser("Chaser.png", 20, 15, false);
+                            Chaser chaser = new Chaser("inimigoC.png", 20, 15, false);
                             chaser.setPosicao(linha, coluna);
                             this.addPersonagem(chaser);
                             break;
                         case 6:
-                            Caveira caveira = new Caveira("caveira.png", 40, 30, false);
+                            Caveira caveira = new Caveira("inimigoCA.png", 40, 30, false);
                             caveira.setPosicao(linha, coluna);
                             this.addPersonagem(caveira);
                             break;
@@ -159,7 +159,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             for (int coluna = 0; coluna < mapa[linha].length; coluna++) {
                 switch (mapa[linha][coluna]) {
                     case 2:
-                        ZigueZague inimigo = new ZigueZague("robo.png", 60, 15, false);
+                        ZigueZague inimigo = new ZigueZague("inimigoA.png", 60, 15, false);
                         inimigo.setPosicao(linha, coluna);
                         this.addPersonagem(inimigo);
                         break;
@@ -176,13 +176,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                         break;
                     case 5:
                         
-                        Chaser chaser = new Chaser("Chaser.png", 20, 15, false);
+                        Chaser chaser = new Chaser("inimigoC.png", 20, 15, false);
                         chaser.setPosicao(linha, coluna);
                         this.addPersonagem(chaser);
                         break;
                     case 6:
-                        System.out.println("cav");
-                        Caveira caveira = new Caveira("caveira.png", 40, 30, false);
+                        Caveira caveira = new Caveira("inimigoCA.png", 40, 30, false);
                         caveira.setPosicao(linha, coluna);
                         this.addPersonagem(caveira);
                         break;
