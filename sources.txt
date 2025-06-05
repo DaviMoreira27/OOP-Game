@@ -5,6 +5,7 @@ C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Auxili
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Controler\ControleDeJogo.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Controler\SaveHandler.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Controler\Tela.java
+C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\exceptions\EndGameException.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\exceptions\GameException.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\exceptions\LoadGameException.java
 C:\Users\lucas\OneDrive\Documentos\Aulas_USP\POO\Projeto-poo\OOP-Game\src\Modelo\BichinhoVaiVemHorizontal.java
