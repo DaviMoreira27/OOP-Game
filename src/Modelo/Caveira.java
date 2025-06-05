@@ -25,7 +25,7 @@ public class Caveira extends Personagem {
         this.iContaIntervalos++;
         if (this.iContaIntervalos == Consts.TIMER) {
             this.iContaIntervalos = 0;
-            Fogo f = new Fogo("fire.png", 5, 1, false);
+            Fogo f = new Fogo("bala.png", 5, 1, false);
             f.setPosicao(pPosicao.getLinha(), pPosicao.getColuna() + 1);
             Desenho.acessoATelaDoJogo().addPersonagem(f);
         }

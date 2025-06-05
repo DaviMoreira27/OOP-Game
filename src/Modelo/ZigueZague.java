@@ -50,7 +50,7 @@ public class ZigueZague extends Personagem {
         if (contadorTiro >= 30) {
             contadorTiro = 0;
 
-            Tiro tiro = new Tiro("fire.png", linhaAtual, colunaAtual, linhaHeroi, colunaHeroi, 10, 1, false);
+            Tiro tiro = new Tiro("bala.png", linhaAtual, colunaAtual, linhaHeroi, colunaHeroi, 10, 1, false);
             Desenho.acessoATelaDoJogo().addPersonagem(tiro);
         }
 
