@@ -39,18 +39,17 @@ public class ZigueZague extends Personagem {
                 else if (linhaHeroi < linhaAtual)
                     this.setPosicao(linhaAtual - 1, colunaAtual);
             }
-        
+
             moveHorizontal = !moveHorizontal;
         }
-        
 
-        moveHorizontal = !moveHorizontal;
+        linhaAtual = pPosicao.getLinha();
+        colunaAtual = pPosicao.getColuna();
 
         contadorTiro++;
         if (contadorTiro >= 30) {
             contadorTiro = 0;
-
-            Tiro tiro = new Tiro("bala.png", linhaAtual, colunaAtual, linhaHeroi, colunaHeroi, 10, 1, false);
+            Tiro tiro = new Tiro("bala.png", linhaAtual, colunaAtual, linhaHeroi, colunaHeroi, 10, 1, false, false);
             Desenho.acessoATelaDoJogo().addPersonagem(tiro);
         }
 

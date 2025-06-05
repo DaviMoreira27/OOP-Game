@@ -28,6 +28,7 @@ import Modelo.Personagem;
 import Modelo.PersonagemDTO;
 import Modelo.ZigueZague;
 import exceptions.GameException;
+import exceptions.LoadGameException;
 
 public class SaveHandler {
 
@@ -81,7 +82,7 @@ public class SaveHandler {
             File inputFile = new File(savesDir, "savegame.zip");
 
             if (!inputFile.exists()) {
-                throw new Exception("Não há nenhum arquivo de save para o jogo");
+                throw new LoadGameException.NoSaveFileFound();
             }
 
             FileInputStream fis = new FileInputStream(inputFile);

@@ -124,13 +124,6 @@ public abstract class Personagem implements Serializable {
         return this.dano;
     }
 
-    public void tomarDano(int valor) {
-        this.vida -= valor;
-        if (this.vida <= 0) {
-            Desenho.acessoATelaDoJogo().removePersonagem(this);
-            this.showVida = false;
-        }
-    }
 
     public Posicao getPosicao() {
         /*TODO: Retirar este método para que objetos externos nao possam operar
@@ -189,7 +182,7 @@ public abstract class Personagem implements Serializable {
     public void receberDano(int dano) {
         this.vida -= dano;
         if (this.vida <= 0) {
-            Desenho.acessoATelaDoJogo().removePersonagem(this);
+            this.showVida = false;
         }
     }
 

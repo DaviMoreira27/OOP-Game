@@ -9,7 +9,7 @@ public class Main {
             public void run() {
                 Tela tTela = new Tela(mostrarMenuFases());
                 tTela.setVisible(true);
-                tTela.setResizable(true);
+                tTela.setResizable(false);
                 tTela.setAlwaysOnTop(true);
                 tTela.createBufferStrategy(2);
                 tTela.go();
