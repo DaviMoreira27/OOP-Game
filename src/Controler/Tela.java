@@ -164,19 +164,18 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                         this.addPersonagem(inimigo);
                         break;
                     case 3:
-                        System.out.println("Horinz");
-                        BichinhoVaiVemHorizontal inimigoH = new BichinhoVaiVemHorizontal("RoboPink.png", 30, 20, false);
+                        BichinhoVaiVemHorizontal inimigoH = new BichinhoVaiVemHorizontal("inimigoh.png", 30, 20, false);
                         inimigoH.setPosicao(linha, coluna);
                         this.addPersonagem(inimigoH);
                         break;
                     case 4:
-                        System.out.println("vert");
-                        BichinhoVaiVemVertical inimigoV = new BichinhoVaiVemVertical("skoot.png", 60, 15, false);
+                        
+                        BichinhoVaiVemVertical inimigoV = new BichinhoVaiVemVertical("inimigoV.png", 60, 15, false);
                         inimigoV.setPosicao(linha, coluna);
                         this.addPersonagem(inimigoV);
                         break;
                     case 5:
-                        System.out.println("chaser");
+                        
                         Chaser chaser = new Chaser("Chaser.png", 20, 15, false);
                         chaser.setPosicao(linha, coluna);
                         this.addPersonagem(chaser);
@@ -228,7 +227,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             }
         });
 
-        hero = new Hero("Robbo.png", 100, 10, false);
+        hero = new Hero("Lucky_Luke.png", 100, 10, false);
         hero.setPosicao(0, 7);
         this.addPersonagem(hero);
 
@@ -408,7 +407,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                         } else {
                             // desenhe chão
                             Image chao = Toolkit.getDefaultToolkit().getImage(
-                                    new java.io.File(".").getCanonicalPath() + Consts.PATH + "blackTile.png");
+                                    new java.io.File(".").getCanonicalPath() + Consts.PATH + "chão.png");
                             g2.drawImage(chao, j * Consts.CELL_SIDE, i * Consts.CELL_SIDE, Consts.CELL_SIDE,
                                     Consts.CELL_SIDE, null);
                         }
@@ -429,7 +428,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         if (jogoPausado) {
             atualizarMenuPausa();
         }
-        g2.setColor(Color.YELLOW);
+        g2.setColor(Color.white);
         g2.setFont(new Font("Arial", Font.BOLD, 24));
         g2.drawString("Pontuação: " + pontuacao, 20, 40);
         g.dispose();
@@ -528,7 +527,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         int linhaDestino = linhaHeroi;
         int colunaDestino = colunaHeroi + 5;
 
-        Tiro tiro = new Tiro("fire.png", linhaHeroi, colunaHeroi, linhaDestino, colunaDestino, 10, 1, false);
+        Tiro tiro = new Tiro("bala.png", linhaHeroi, colunaHeroi, linhaDestino, colunaDestino, 10, 1, false);
         Desenho.acessoATelaDoJogo().addPersonagem(tiro);
 
         repaint();

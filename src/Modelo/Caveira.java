@@ -16,6 +16,7 @@ public class Caveira extends Personagem {
         super(sNomeImagePNG, cDano, cVida, imported);
         bMortal = false;
         this.iContaIntervalos = 0;
+        this.bTransponivel = false;
     }
 
     public void autoDesenho() {
