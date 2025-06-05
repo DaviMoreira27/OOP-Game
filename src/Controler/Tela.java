@@ -9,6 +9,7 @@ import Modelo.BichinhoVaiVemVertical;
 import Modelo.BlocoMovel;
 import Modelo.Caveira;
 import Modelo.Chaser;
+import Modelo.Fogo;
 import Modelo.Hero;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
@@ -378,11 +379,14 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void removePersonagem(Personagem umPersonagem) {
-        if(!(umPersonagem instanceof Hero)&& !(umPersonagem instanceof Tiro)){
+        if (!(umPersonagem instanceof Hero) &&
+            !(umPersonagem instanceof Tiro) &&
+            !(umPersonagem instanceof Fogo) &&
+            !(umPersonagem instanceof BlocoMovel)) { // se quiser ignorar blocos também
             pontuacao++;
         }
         faseAtual.remove(umPersonagem);
-    }
+}
 
     public Graphics getGraphicsBuffer() {
         return g2;
