@@ -84,8 +84,8 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public void carregarProximaFase() {
         faseAtualNumero++;
         if (faseAtualNumero == 6) {
-            System.out.println("Parabens! Voce concluiu nosso jogo!");
-            return;
+            System.out.println("Parabens! Voce concluiu nosso jogo!\n Criadores: Lucas Michael e Davi Santana");
+            System.exit(0);
         }
         String nomeMapa = "mapas/fase" + faseAtualNumero + ".txt";
         try {
