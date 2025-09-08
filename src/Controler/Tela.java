@@ -267,7 +267,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         });
 
         JButton btnSalvar = new JButton("Salvar jogo");
-        btnSalvar.addActionListener(e -> SaveHandler.salvarJogo(this.faseAtual));
+        btnSalvar.addActionListener(e -> SaveHandler.salvarJogo(this.faseAtual, this.faseAtualNumero));
         btnSalvar.setFont(new Font(getName(), Font.BOLD, getHeight() / 20));
 
         JButton btnCarregar = new JButton("Carregar jogo");
@@ -555,11 +555,11 @@ public void keyPressed(KeyEvent e) {
     }
 
     if (e.getKeyCode() == KeyEvent.VK_S) {
-        SaveHandler.salvarJogo(faseAtual);
+        SaveHandler.salvarJogo(faseAtual, this.faseAtualNumero);
     }
 
     if (e.getKeyCode() == KeyEvent.VK_L) {
-        SaveHandler.carregarJogo();
+        this.loadGame();
     }
 
     if (!jogoPausado) {

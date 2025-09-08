@@ -6,11 +6,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -21,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 
 import Modelo.BichinhoVaiVemHorizontal;
 import Modelo.BichinhoVaiVemVertical;
+import Modelo.BlocoMovel;
 import Modelo.Caveira;
 import Modelo.Chaser;
 import Modelo.Hero;
@@ -32,38 +34,37 @@ import exceptions.LoadGameException;
 
 public class SaveHandler {
 
-    public static void salvarJogo(ArrayList<Personagem> faseAtual) {
+    public static void salvarJogo(ArrayList<Personagem> faseAtual, int faseAtualNumero) {
         try {
-            Gson gson = new GsonBuilder().create();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             List<PersonagemDTO> dtos = converterParaDTOs(faseAtual);
-            String json = gson.toJson(dtos);
+
+            Map<String, Object> saveMap = new LinkedHashMap<>();
+            saveMap.put("fase", faseAtualNumero);
+            saveMap.put("personagens", dtos);
+
+            String json = gson.toJson(saveMap);
 
             String currentPath = System.getProperty("user.dir");
-
             File savesDir = new File(currentPath, "saves");
-            if (!savesDir.exists()) {
-                boolean created = savesDir.mkdirs();
-                if (!created) {
-                    System.err.println("Erro ao criar a pasta 'saves'");
-                    return;
-                }
+
+            if (!savesDir.exists() && !savesDir.mkdirs()) {
+                System.err.println("Erro ao criar a pasta 'saves'");
+                return;
             }
 
             File outputFile = new File(savesDir, "savegame.zip");
 
+            try (
             FileOutputStream fos = new FileOutputStream(outputFile);
             ZipOutputStream zos = new ZipOutputStream(fos, StandardCharsets.UTF_8);
-
-            ZipEntry entry = new ZipEntry("fase.json");
-            zos.putNextEntry(entry);
-
-            Writer writer = new OutputStreamWriter(zos, StandardCharsets.UTF_8);
-            writer.write(json);
-            writer.flush();
-
-            zos.closeEntry();
-            writer.close();
-            zos.close();
+            OutputStreamWriter writer = new OutputStreamWriter(zos, StandardCharsets.UTF_8)) {
+                ZipEntry entry = new ZipEntry("fase.json");
+                zos.putNextEntry(entry);
+                writer.write(json);
+                writer.flush();
+                zos.closeEntry();
+            }
 
             System.out.println("Jogo salvo com sucesso em: " + outputFile.getAbsolutePath());
         } catch (Exception e) {
@@ -76,7 +77,6 @@ public class SaveHandler {
         ArrayList<Personagem> faseAtual = new ArrayList<>();
 
         try {
-            // TODO: Permitir que o usuario escolha aonde está localizado o arquivo
             String currentPath = System.getProperty("user.dir");
             File savesDir = new File(currentPath, "saves");
             File inputFile = new File(savesDir, "savegame.zip");
@@ -164,6 +164,9 @@ public class SaveHandler {
                 break;
             case "Chaser":
                 p = new Chaser(dto.image, dto.dano, dto.vida, true);
+                break;
+            case "BlocoMovel":
+                p = new BlocoMovel("Mesa.png", 0, 1, false);
                 break;
             default:
                 System.out.println("Classe desconhecida: " + dto.classe);
